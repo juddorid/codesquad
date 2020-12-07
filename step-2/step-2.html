@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       body {
-        background: #333333;
+        background:#3e3e3e;
       }
       .container {
         justify-content: center;
@@ -38,6 +38,8 @@
         align-items: center;
         display: flex;
         padding: 5px;
+        border: 1px solid white;
+        margin-bottom: 5px;
       }
       .input-title {
         width: 100px;
@@ -45,9 +47,8 @@
         border: 1px solid white;
         color: white;
         text-align: center;
-        
         margin: auto;
-        padding: 5px;
+        padding-top: 10px;
       }
       .input_box {
         width: 200px;
@@ -60,19 +61,25 @@
         width: 100px;
         margin: 0 auto;
         padding: 12px 0;
+        background:#3e3e3e;
+        border: 1px solid white;
+        color: white;
       }
     </style>
     <title>Step-2</title>
   </head>
   <body>
     <div class="container">
-    <div class="container" id="container_box">
       <div class="step-title">Step-2: 평면 큐브 구현하기</div>
-    </div>
-    <div class="input_container">
-      <div class="input-title">CUBE ></div>
-      <input type="text" class="input_box">
-      <input type="submit" class="input_button" value="GO!">
+      <div class="input_container">
+        <div class="input-title">CUBE ></div>
+        <input type="text" class="input_box">
+        <input type="submit" class="input_button" id="input_btn" value="GO!">
+      </div>
+      <div class="container initial_container" id="initial_container_box"></div>
+      <div class="container output_container" id="output_container_box">
+ 
+      </div>
     </div>
     </div>
   </div>
