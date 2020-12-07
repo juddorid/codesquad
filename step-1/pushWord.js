@@ -6,16 +6,14 @@ const LEFT = 'L';
 const RIGHT = 'R';
 const PLUS = 'plus';
 const MINUS = 'minus';
+const ALERT = '빈칸을 입력해주세요.';
 
 const operate = function (txt, dir, num) {
   inputCheck(txt, dir, num);
 
-  const checkNumber = (num) => (num > 0 ? PLUS : MINUS);
-
   let unifiedDirection = dir.toUpperCase();
-  let checkedNumber = checkNumber(num);
   let absNumber = Math.abs(num);
-  let lastDirection = getDirection(unifiedDirection, checkedNumber);
+  let lastDirection = getDirection(unifiedDirection, num);
   let lastWord = pushWord(txt, lastDirection, absNumber);
   return ($resultBox.value = lastWord.join(''));
 };
@@ -24,27 +22,35 @@ const inputCheck = function (txt, dir, num) {
   console.log(txt, dir, num);
   const spaceCheck = function (txt, dir, num) {
     if (txt === '') {
-      alert('빈칸을 입력해주세요.');
+      alert(ALERT);
       moveFocus($inputWord);
     } else if (dir === '') {
-      alert('빈칸을 입력해주세요.');
+      alert(ALERT);
       moveFocus($inputDirection);
     } else if (num === '') {
-      alert('빈칸을 입력해주세요.');
+      alert(ALERT);
       moveFocus($inputNumber);
     }
   };
   const directionCheck = function (dir) {
     if (dir !== 'L' && dir !== 'l' && dir !== 'R' && dir !== 'r' && dir.length !== 0) {
-      alert('L 또는 R 만 입력해주세요. (소문자는 가능해요)');
+      alert('L 또는 R 만 입력해주세요. (소문자도 가능해요)');
       moveFocus($inputDirection);
       resetValue($inputDirection);
     }
   };
   const numberCheck = function (num) {
-    if (num < -100 || num > 100) {
+    if (isNaN(num)) {
+      alert('숫자를 입력해주세요.');
+    } else if (Number(num) !== parseInt(num)) {
+      alert('정수로 입력해주세요.');
+    } else if (num.length > 16) {
+      alert('정수로 입력해주세요.');
+    } else if (num < -100 || num > 100) {
       alert('-100보다 크거나 같고, 100보다 작은 수를 입력해주세요.');
     }
+    moveFocus($inputNumber);
+    resetValue($inputNumber);
   };
   spaceCheck(txt, dir, num);
   directionCheck(dir);
@@ -52,10 +58,12 @@ const inputCheck = function (txt, dir, num) {
 };
 
 const getDirection = function (dir, num) {
+  const checkNumber = (num) => (num > 0 ? PLUS : MINUS);
+  let checkedNumber = checkNumber(num);
   let lastDirection;
-  if ((dir === LEFT && num === PLUS) || (dir === RIGHT && num === MINUS)) {
+  if ((dir === LEFT && checkedNumber === PLUS) || (dir === RIGHT && checkedNumber === MINUS)) {
     lastDirection = LEFT;
-  } else if ((dir === LEFT && num === MINUS) || (dir === RIGHT && num === PLUS)) {
+  } else if ((dir === LEFT && checkedNumber === MINUS) || (dir === RIGHT && checkedNumber === PLUS)) {
     lastDirection = RIGHT;
   }
   return lastDirection;
@@ -91,4 +99,12 @@ function moveFocus(next) {
 function resetValue(data) {
   let resetData = (data.value = '');
   return resetData;
+}
+
+function resetAll() {
+  $inputWord.value = '';
+  $inputDirection.value = '';
+  $inputNumber.value = '';
+  $resultBox.value = '';
+  moveFocus($inputWord);
 }

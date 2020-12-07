@@ -47,7 +47,7 @@
         margin: 4px auto;
       }
     </style>
-    <title>Codesquad Test</title>
+    <title>Step-1</title>
   </head>
   <body>
     <div class="container">
@@ -61,12 +61,7 @@
         maxlength="1"
         onkeyup="autoTab($inputDirection, $inputNumber)"
       />
-      <input
-        class="step-1"
-        id="step-1-input-number"
-        type="text"
-        placeholder="숫자를 입력해주세요. (-100 <= n < 100)"
-      />
+      <input class="step-1" id="step-1-input-number" type="text" placeholder="숫자를 입력해주세요. (-100 <= n < 100)" />
       <input
         class="step-1-button step-1"
         type="submit"
@@ -74,12 +69,8 @@
         id="step-1-btn"
         onclick="operate($inputWord.value, $inputDirection.value, $inputNumber.value)"
       />
-      <input
-        class="step-1"
-        id="step-1-input-result"
-        disabled
-        placeholder="실행 버튼을 누르면 결과가 나타나요."
-      />
+      <input class="step-1-button step-1" type="submit" value="다시하기" id="step-1-btn" onclick="resetAll()" />
+      <input class="step-1" id="step-1-input-result" disabled placeholder="실행 버튼을 누르면 결과가 나타나요." />
     </div>
   </body>
   <script src="./pushWord.js"></script>
