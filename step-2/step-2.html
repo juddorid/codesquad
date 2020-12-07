@@ -7,13 +7,7 @@
       body {
         background: #333333;
       }
-      input:focus::-webkit-input-placeholder,
-      textarea:focus::-webkit-input-placeholder {
-        /* WebKit browsers */
-        color: transparent;
-      }
       .container {
-        width: 340px;
         justify-content: center;
         align-items: center;
         border: 1px solid white;
@@ -21,7 +15,6 @@
         padding: 5px;
       }
       .step-title {
-        width: 300px;
         height: 30px;
         border: 1px solid white;
         color: white;
@@ -29,49 +22,60 @@
         margin: 5px auto;
         padding: 5px;
       }
-      .step-1 {
-        width: 300px;
-        height: 30px;
-        text-align: center;
-        font-size: 16px;
-        margin: 0 auto;
-        display: flex;
+      .wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
       }
-      .step-1-button {
-        width: 300px;
-        height: 30px;
+      .wrapper .color_box {
+        border: 1px solid white;
+        font-size: 20px;
+        color: white;
         text-align: center;
-        font-size: 16px;
+        padding: 10px 0;
+      }
+      .input_container {
         justify-content: center;
         align-items: center;
-        margin: 4px auto;
+        display: flex;
+        padding: 5px;
+      }
+      .input-title {
+        width: 100px;
+        height: 30px;
+        border: 1px solid white;
+        color: white;
+        text-align: center;
+        
+        margin: auto;
+        padding: 5px;
+      }
+      .input_box {
+        width: 200px;
+        height: 30px;
+        padding: 5px 0;
+        font-size: 24px;
+        text-align: center;
+      }
+      .input_button {
+        width: 100px;
+        margin: 0 auto;
+        padding: 12px 0;
       }
     </style>
-    <title>Step-1</title>
+    <title>Step-2</title>
   </head>
   <body>
     <div class="container">
-      <div class="step-title">Step-1: 단어 밀어내기 구현하기</div>
-      <input class="step-1" id="step-1-input-word" type="text" placeholder="단어를 입력해주세요." />
-      <input
-        class="step-1"
-        id="step-1-input-direction"
-        type="text"
-        placeholder="방향을 입력해주세요. (L or R)"
-        maxlength="1"
-        onkeyup="autoTab($inputDirection, $inputNumber)"
-      />
-      <input class="step-1" id="step-1-input-number" type="text" placeholder="숫자를 입력해주세요. (-100 <= n < 100)" />
-      <input
-        class="step-1-button step-1"
-        type="submit"
-        value="실행"
-        id="step-1-btn"
-        onclick="operate($inputWord.value, $inputDirection.value, $inputNumber.value)"
-      />
-      <input class="step-1-button step-1" type="submit" value="다시하기" id="step-1-btn" onclick="resetAll()" />
-      <input class="step-1" id="step-1-input-result" disabled placeholder="실행 버튼을 누르면 결과가 나타나요." />
+    <div class="container" id="container_box">
+      <div class="step-title">Step-2: 평면 큐브 구현하기</div>
     </div>
+    <div class="input_container">
+      <div class="input-title">CUBE ></div>
+      <input type="text" class="input_box">
+      <input type="submit" class="input_button" value="GO!">
+    </div>
+    </div>
+  </div>
   </body>
   <script src="./planeCube.js"></script>
 </html>
