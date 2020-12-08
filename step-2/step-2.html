@@ -22,12 +22,28 @@
         margin: 5px auto;
         padding: 5px;
       }
+      .nav_box {
+        height: 50px;
+        border: 1px solid white;
+        color: white;
+        text-align: center;
+        margin: 5px auto;
+        padding: 5px;
+      }
+      .nav_button {
+        width: 140px;
+        margin: 5px auto;
+        padding: 12px 0;
+        background:#3e3e3e;
+        border: 1px solid white;
+        color: white
+      }
       .wrapper {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         margin: 20px;
       }
-      .wrapper .color_box {
+      .color_box {
         border: 1px solid white;
         font-size: 20px;
         color: white;
@@ -71,9 +87,18 @@
   </head>
   <body>
     <div class="container">
+      <div class="nav_box">
+        <a href="../step-1/step-1.html">
+        <input class="nav_button" type="button" value="<<< BACK">
+      </a>
+      <a href="../codeSquadTest.html">
+        <input class="nav_button" type="button" value="FIRST">
+      </a>
+        <input class="nav_button" type="button" value="NEXT >>>">
+      </div>
       <div class="step-title">Step-2: 평면 큐브 구현하기</div>
       <div class="input_container">
-        <div class="input-title">CUBE ></div>
+        <input class="input_button" type="button" value="CUBE   >>> " onClick="window.location.reload()">
         <input type="text" class="input_box">
         <input type="submit" class="input_button" id="input_btn" value="GO!" onclick="findingMove()">
       </div>

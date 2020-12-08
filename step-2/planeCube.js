@@ -19,15 +19,16 @@ const $containerBox = document.querySelector('#container_box');
 const $inputButton = document.querySelector('#input_btn');
 const $inputBox = document.querySelector('body > div > div.input_container > input.input_box');
 const WRAPPER = 'wrapper';
+const COLORBOX = 'color_box';
 const queryWRAPPER = '.wrapper';
 const queryCOLORBOX = '.color_box';
-let $wrapper;
 let wrapperCount = 0;
+let newCube = myCube;
 
 getCube(myCube, $containerBox);
 
 function getCube(cube, containerBox) {
-  const getCubeArray = function (cube) {
+  function getCubeArray(cube) {
     let cubeArray = [];
     for (let i = 0; i < cube.length; i++) {
       for (let j = 0; j < cube.length; j++) {
@@ -35,61 +36,49 @@ function getCube(cube, containerBox) {
       }
     }
     return cubeArray;
-  };
-  function createWrapper(containerBox) {
-    let tempDiv = document.createElement('div');
-    tempDiv.className = WRAPPER;
-    containerBox.append(tempDiv);
   }
-  function createColorBox(containerBox) {
-    let tempDiv = document.createElement('div');
-    tempDiv.className = 'color_box';
-    containerBox.querySelectorAll(queryWRAPPER)[wrapperCount].append(tempDiv);
-  }
-  function repeatColorBox(containerBox) {
-    for (let i = 0; i < 9; i++) {
-      createColorBox(containerBox);
+
+  function createCubeDOM() {
+    const boxSize = 9;
+    let wrapper = createDIV(WRAPPER);
+    for (let i = 0; i < boxSize; i++) {
+      wrapper.append(createDIV(COLORBOX));
     }
+    return wrapper;
   }
+
   function inputCubeValue(cube, containerBox) {
     let cubeArray = getCubeArray(cube);
-    for (
-      let i = 0;
-      i < containerBox.querySelectorAll(queryWRAPPER)[wrapperCount].querySelectorAll(queryCOLORBOX).length;
-      i++
-    ) {
-      containerBox.querySelectorAll(queryWRAPPER)[wrapperCount].querySelectorAll(queryCOLORBOX)[i].innerText =
-        cubeArray[i];
+    let colorBox = containerBox.children;
+    for (let i = 0; i < colorBox.length; i++) {
+      colorBox[i].innerText = cubeArray[i];
     }
   }
   function getColor(containerBox) {
     const colorSet = { R: 'red', W: 'darkgray', G: 'green', C: 'cyan', B: 'blue' };
-    for (
-      let i = 0;
-      i < containerBox.querySelectorAll(queryWRAPPER)[wrapperCount].querySelectorAll(queryCOLORBOX).length;
-      i++
-    ) {
-      containerBox.querySelectorAll(queryWRAPPER)[wrapperCount].querySelectorAll(queryCOLORBOX)[i].style.background =
-        colorSet[
-          containerBox.querySelectorAll(queryWRAPPER)[wrapperCount].querySelectorAll(queryCOLORBOX)[i].innerText
-        ];
+    let colorBox = containerBox.children;
+    for (let i = 0; i < colorBox.length; i++) {
+      colorBox[i].style.background = colorSet[colorBox[i].innerText];
     }
   }
-  createWrapper(containerBox);
-  repeatColorBox(containerBox);
-  inputCubeValue(cube, containerBox);
-  getColor(containerBox);
+
+  let box = createCubeDOM();
+  inputCubeValue(cube, box);
+  getColor(box);
+  containerBox.append(box);
   wrapperCount++;
 }
 
-const currentCube = function (cube) {
-  let newCube = [];
-  for (let i = 0; i < cube.length; i++) {
-    for (let j = 0; j < cube.length; j++) {
-      newCube.push(cube[i][j]);
-    }
-  }
-  return newCube;
+function createDIV(className) {
+  let tempDiv = document.createElement('div');
+  tempDiv.className = className;
+  return tempDiv;
+}
+
+const getCommandViewBox = function (command) {
+  let box = createDIV(COLORBOX);
+  $containerBox.append(box);
+  box.innerText = command;
 };
 
 // U
@@ -99,7 +88,9 @@ const upperLeft = function (currentArr) {
   for (let i = 0; i < currentArr.length; i++) {
     currentArr[0][i] = moveArr[i];
   }
-  getCube(myCube, $containerBox);
+  newCube = currentArr;
+  getCube(currentArr, $containerBox);
+  return newCube;
 };
 
 // U'
@@ -109,7 +100,9 @@ const upperRight = function (currentArr) {
   for (let i = 0; i < currentArr.length; i++) {
     currentArr[0][i] = moveArr[i];
   }
-  getCube(myCube, $containerBox);
+  newCube = currentArr;
+  getCube(currentArr, $containerBox);
+  return newCube;
 };
 
 // R
@@ -119,7 +112,9 @@ const rightUp = function (currentArr) {
   for (let i = 0; i < currentArr.length; i++) {
     currentArr[i][2] = moveArr[i];
   }
-  getCube(myCube, $containerBox);
+  newCube = currentArr;
+  getCube(currentArr, $containerBox);
+  return newCube;
 };
 
 // R'
@@ -129,7 +124,9 @@ const rightDown = function (currentArr) {
   for (let i = 0; i < currentArr.length; i++) {
     currentArr[i][2] = moveArr[i];
   }
-  getCube(myCube, $containerBox);
+  newCube = currentArr;
+  getCube(currentArr, $containerBox);
+  return newCube;
 };
 
 // L (warning! opposite direction!)
@@ -139,7 +136,9 @@ const leftDown = function (currentArr) {
   for (let i = 0; i < currentArr.length; i++) {
     currentArr[i][0] = moveArr[i];
   }
-  getCube(myCube, $containerBox);
+  newCube = currentArr;
+  getCube(currentArr, $containerBox);
+  return newCube;
 };
 
 // L' (warning! opposite direction!)
@@ -149,7 +148,9 @@ const leftUp = function (currentArr) {
   for (let i = 0; i < currentArr.length; i++) {
     currentArr[i][0] = moveArr[i];
   }
-  getCube(myCube, $containerBox);
+  newCube = currentArr;
+  getCube(currentArr, $containerBox);
+  return newCube;
 };
 
 // B
@@ -159,7 +160,9 @@ const bottomRight = function (currentArr) {
   for (let i = 0; i < currentArr.length; i++) {
     currentArr[2][i] = upperArr[i];
   }
-  getCube(myCube, $containerBox);
+  newCube = currentArr;
+  getCube(currentArr, $containerBox);
+  return newCube;
 };
 
 // B'
@@ -169,7 +172,9 @@ const bottomLeft = function (currentArr) {
   for (let i = 0; i < currentArr.length; i++) {
     currentArr[2][i] = upperArr[i];
   }
-  getCube(myCube, $containerBox);
+  newCube = currentArr;
+  getCube(currentArr, $containerBox);
+  return newCube;
 };
 
 // Q
@@ -185,24 +190,18 @@ const getInputValue = function () {
 };
 
 // U U' R R' L L' B B' Q
-//(singleQuote 정리)
+// (singleQuote 정리)
 // 공백제거
 // 문자열 유효한지 검사
 const valueCheck = function (value) {
   let valueArr = value.split('');
   let upperValueArr = valueArr.map((e) => e.toUpperCase());
-  spaceCheck(upperValueArr);
   let noSpaceArr = delSpace(upperValueArr);
+  spaceCheck(noSpaceArr);
   checkSingleQuote(noSpaceArr);
   let noSingleQuoteArr = delSingleQuote(noSpaceArr);
   stringCheck(noSingleQuoteArr);
 
-  function spaceCheck(value) {
-    if (value.length === 0) {
-      alert('값을 입력해주세요.(빈칸입니다.)');
-      $inputBox.focus();
-    }
-  }
   function delSpace(value) {
     let noSpaceArr = [];
     for (let i = 0; i < value.length; i++) {
@@ -212,16 +211,9 @@ const valueCheck = function (value) {
     }
     return noSpaceArr;
   }
-  function stringCheck(value) {
-    let count = 0;
-    for (let i = 0; i < value.length; i++) {
-      if (!stringSet.includes(value[i])) {
-        count++;
-      }
-    }
-    if (count !== 0) {
-      alert("알 수 없는 입력값이 있습니다.\n(유효한 입력값: U, U', R, R', L, L', B, B', Q)");
-      $inputBox.value = '';
+  function spaceCheck(value) {
+    if (value.length === 0) {
+      alert('값을 입력해주세요.(빈칸입니다.)');
       $inputBox.focus();
     }
   }
@@ -234,8 +226,7 @@ const valueCheck = function (value) {
     }
     if (count !== 0) {
       alert('잘못된 입력입니다.(sigleQuote연속)');
-      $inputBox.value = '';
-      $inputBox.focus();
+      resetFocus();
     }
     return value;
   }
@@ -251,15 +242,29 @@ const valueCheck = function (value) {
     }
     return noSingleQuoteArr;
   }
-  return noSpaceArr;
+  function stringCheck(value) {
+    let count = 0;
+    for (let i = 0; i < value.length; i++) {
+      if (!stringSet.includes(value[i])) {
+        count++;
+      }
+    }
+    if (count !== 0) {
+      alert("알 수 없는 입력값이 있습니다.\n(유효한 입력값: U, U', R, R', L, L', B, B', Q)");
+      resetFocus();
+    }
+  }
+  return noSingleQuoteArr;
 };
 
 // movePart
 const findingMove = function () {
   let command = getInputValue();
+  console.log(command);
   for (let i = 0; i < command.length; i++) {
     for (let j = 0; j < stringSet.length; j++) {
       if (command[i] === stringSet[j]) {
+        getCommandViewBox(command[i]);
         movingCube(command[i]);
       }
     }
@@ -267,23 +272,41 @@ const findingMove = function () {
 };
 
 const movingCube = function (value) {
-  if (value === stringSet[0]) {
-    upperLeft(myCube);
-  } else if (value === stringSet[1]) {
-    upperRight(myCube);
-  } else if (value === stringSet[2]) {
-    rightUp(myCube);
-  } else if (value === stringSet[3]) {
-    rightDown(myCube);
-  } else if (value === stringSet[4]) {
-    leftDown(myCube);
-  } else if (value === stringSet[5]) {
-    leftUp(myCube);
-  } else if (value === stringSet[6]) {
-    bottomRight(myCube);
-  } else if (value === stringSet[7]) {
-    bottomLeft(myCube);
-  } else if (value === stringSet[8]) {
-    quitBye();
+  switch (value) {
+    case stringSet[0]:
+      upperLeft(newCube);
+      break;
+    case stringSet[1]:
+      upperRight(newCube);
+      break;
+    case stringSet[2]:
+      rightUp(newCube);
+      break;
+    case stringSet[3]:
+      rightDown(newCube);
+      break;
+    case stringSet[4]:
+      leftDown(newCube);
+      break;
+    case stringSet[5]:
+      leftUp(newCube);
+      break;
+    case stringSet[6]:
+      bottomRight(newCube);
+      break;
+    case stringSet[7]:
+      bottomLeft(newCube);
+      break;
+    case stringSet[8]:
+      quitBye();
+      break;
+    default:
+      break;
   }
+};
+
+// reset
+const resetFocus = function () {
+  $inputBox.value = '';
+  $inputBox.focus();
 };
