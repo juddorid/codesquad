@@ -15,64 +15,70 @@ const initialCube = [
   ['G', 'B', 'B'],
 ];
 
-const $initialContainerBox = document.getElementById('initial_container_box');
-const $outputContainerBox = document.getElementById('output_container_box');
-
+const $containerBox = document.querySelector('#container_box');
 const $inputButton = document.querySelector('#input_btn');
-const $colorBoxWrapper = document.getElementById('color_box_wrapper');
-const $container = document.getElementsByClassName('container');
 const WRAPPER = 'wrapper';
-const INPUT = '.initial_container .color_box';
-const OUTPUT = '.output_container .color_box';
-let wrapperCount = 1;
-let box = document.getElementsByClassName(WRAPPER + wrapperCount);
+const queryWRAPPER = '.wrapper';
+const queryCOLORBOX = '.color_box';
+let $wrapper;
+let wrapperCount = 0;
 
-getCube(initialCube, $initialContainerBox);
+getCube(initialCube, $containerBox);
 
-function getCube(arr, idBox) {
-  const getCubeArray = function (arr) {
+function getCube(cube, containerBox) {
+  const getCubeArray = function (cube) {
     let cubeArray = [];
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < arr.length; j++) {
-        cubeArray.push(arr[i][j]);
+    for (let i = 0; i < cube.length; i++) {
+      for (let j = 0; j < cube.length; j++) {
+        cubeArray.push(cube[i][j]);
       }
     }
     return cubeArray;
   };
-  function createWrapper(idBox) {
+  function createWrapper(containerBox) {
     let tempDiv = document.createElement('div');
     tempDiv.className = WRAPPER;
-    tempDiv.classList.add(WRAPPER + wrapperCount);
-    wrapperCount++;
-    idBox.append(tempDiv);
+    containerBox.append(tempDiv);
   }
-  function createColorBox(idBox) {
+  function createColorBox(containerBox) {
     let tempDiv = document.createElement('div');
     tempDiv.className = 'color_box';
-    idBox.getElementsByClassName(WRAPPER + (wrapperCount - 1))[0].append(tempDiv);
+    containerBox.querySelectorAll(queryWRAPPER)[wrapperCount].append(tempDiv);
   }
-  function repeatColorBox(idBox) {
+  function repeatColorBox(containerBox) {
     for (let i = 0; i < 9; i++) {
-      createColorBox(idBox);
+      createColorBox(containerBox);
     }
   }
-  function inputCubeValue(arr, box) {
-    let cubeArray = getCubeArray(arr);
-    for (let i = 0; i < box.length; i++) {
-      box[i].innerText = cubeArray[i];
+  function inputCubeValue(cube, containerBox) {
+    let cubeArray = getCubeArray(cube);
+    for (
+      let i = 0;
+      i < containerBox.querySelectorAll(queryWRAPPER)[wrapperCount].querySelectorAll(queryCOLORBOX).length;
+      i++
+    ) {
+      containerBox.querySelectorAll(queryWRAPPER)[wrapperCount].querySelectorAll(queryCOLORBOX)[i].innerText =
+        cubeArray[i];
     }
   }
-  function getColor(box) {
+  function getColor(containerBox) {
     const colorSet = { R: 'red', W: 'darkgray', G: 'green', C: 'cyan', B: 'blue' };
-    for (let i = 0; i < box.length; i++) {
-      box[i].style.background = colorSet[box[i].innerText];
+    for (
+      let i = 0;
+      i < containerBox.querySelectorAll(queryWRAPPER)[wrapperCount].querySelectorAll(queryCOLORBOX).length;
+      i++
+    ) {
+      containerBox.querySelectorAll(queryWRAPPER)[wrapperCount].querySelectorAll(queryCOLORBOX)[i].style.background =
+        colorSet[
+          containerBox.querySelectorAll(queryWRAPPER)[wrapperCount].querySelectorAll(queryCOLORBOX)[i].innerText
+        ];
     }
   }
-  createWrapper(idBox);
-  repeatColorBox(idBox);
-  let colorBox = box[0].getElementsByClassName('color_box');
-  inputCubeValue(arr, colorBox);
-  getColor(colorBox);
+  createWrapper(containerBox);
+  repeatColorBox(containerBox);
+  inputCubeValue(cube, containerBox);
+  getColor(containerBox);
+  wrapperCount++;
 }
 
 // U
@@ -85,5 +91,15 @@ const upperLeft = function (currentArr) {
   return currentArr;
 };
 
-let upLeft = upperLeft(initialCube);
-getCube(upLeft, $outputContainerBox);
+// U'
+const upperRight = function (currentArr) {
+  let upperArr = [currentArr[0][0], currentArr[0][1], currentArr[0][2]];
+  upperArr.push(upperArr.shift());
+  currentArr[0][0] = upperArr[0];
+  currentArr[0][1] = upperArr[1];
+  currentArr[0][2] = upperArr[2];
+  return currentArr;
+};
+
+// let upLeft = upperLeft(initialCube);
+// getCube(upLeft, $outputContainerBox);
