@@ -39,56 +39,39 @@ function getRubiksCube(set) {
 
 // drawing Cube
 function drawCube(box, className) {
-  function oneWrapper(box, className) {
+  // create div
+  function createDIV(className) {
+    let tempDiv = document.createElement('div');
+    tempDiv.className = className;
+    return tempDiv;
+  }
+  // create wrapper > and color box in line container
+  function createCubeDOM() {
+    const boxSize = 9;
+    let wrapper = createDIV(WRAPPER);
+    for (let i = 0; i < boxSize; i++) {
+      wrapper.append(createDIV(COLORBOX));
+    }
+    return wrapper;
+  }
+  function oneWrapper() {
     let container = createDIV(className);
     container.append(createCubeDOM());
     box.append(container);
   }
-
-  function middleWrapper(box, className) {
+  function middleWrapper() {
     let container = createDIV(className);
     for (let i = 0; i < MIDDLE; i++) {
       container.append(createCubeDOM());
       box.append(container);
     }
   }
-
   oneWrapper($viewBox, CONTAINER);
   middleWrapper($viewBox, CONTAINER);
   oneWrapper($viewBox, CONTAINER);
 }
 
-// create div
-function createDIV(className) {
-  let tempDiv = document.createElement('div');
-  tempDiv.className = className;
-  return tempDiv;
-}
-
-// append container
-function appendDIV(where, what) {
-  let appendDiv = where.append(what);
-  return appendDiv;
-}
-
-// create floor for line container
-function createFloor() {
-  const FLOORS = 3;
-  let lineContainer = createDIV(CONTAINER);
-
-  return lineContainer;
-}
-
-// create wrapper > and color box in line container
-function createCubeDOM() {
-  const boxSize = 9;
-  let wrapper = createDIV(WRAPPER);
-  for (let i = 0; i < boxSize; i++) {
-    wrapper.append(createDIV(COLORBOX));
-  }
-  return wrapper;
-}
-
+// input cube value
 function inputCubeValue(cube, containerBox) {
   let cubeArray = getCubeArray(cube);
   let colorBox = containerBox.children;
