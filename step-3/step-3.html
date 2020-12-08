@@ -89,6 +89,13 @@
         margin: 0 auto;
         display: flex;
       }
+      .view_container {
+        justify-content: center;
+        align-items: center;
+        border: 1px solid white;
+        margin: 0 auto;
+        padding: 5px;
+      }
     </style>
     <title>Step-3: RUBIK'S CUBE</title>
   </head>
@@ -111,7 +118,9 @@
         <input type="text" class="input_box" />
         <input type="submit" class="input_button" id="input_btn" value="GO!" onclick="findingMove()" />
       </div>
-      <div class="output_container" id="container_box"></div>
+      <div class="output_container">
+        <div class="view_container" id="container_box"></div>
+      </div>
     </div>
   </body>
   <script src="rubiksCube.js"></script>

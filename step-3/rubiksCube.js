@@ -1,17 +1,19 @@
 const colorSet = ['B', 'W', 'O', 'G', 'Y', 'R'];
 const commandSet = ['F', 'R', 'U', 'B', 'L', 'D'];
 const RUBIKS = 3;
+const MIDDLE = 4;
 const CONTAINER = 'line_container';
 const WRAPPER = 'wrapper';
 const COLORBOX = 'color_box';
 
-const $containerBox = document.querySelector('#container_box');
+const $viewBox = document.querySelector('#container_box');
 const $inputButton = document.querySelector('#input_btn');
 const $inputBox = document.querySelector('body > div > div.input_container > input.input_box');
 let cubeCount = 0;
 
 let rubiksCube = getRubiksCube(colorSet);
-let lineFloor = createFloor($containerBox, CONTAINER);
+
+let initialCube = drawCube($viewBox, CONTAINER);
 
 // plane cube
 function getRubiks(color) {
@@ -35,6 +37,27 @@ function getRubiksCube(set) {
   return rubiksCube;
 }
 
+// drawing Cube
+function drawCube(box, className) {
+  function oneWrapper(box, className) {
+    let container = createDIV(className);
+    container.append(createCubeDOM());
+    box.append(container);
+  }
+
+  function middleWrapper(box, className) {
+    let container = createDIV(className);
+    for (let i = 0; i < MIDDLE; i++) {
+      container.append(createCubeDOM());
+      box.append(container);
+    }
+  }
+
+  oneWrapper($viewBox, CONTAINER);
+  middleWrapper($viewBox, CONTAINER);
+  oneWrapper($viewBox, CONTAINER);
+}
+
 // create div
 function createDIV(className) {
   let tempDiv = document.createElement('div');
@@ -49,21 +72,21 @@ function appendDIV(where, what) {
 }
 
 // create floor for line container
-function createFloor(box, className) {
+function createFloor() {
   const FLOORS = 3;
-  for (let i = 0; i < FLOORS; i++) {
-    appendDIV(box, createDIV(className));
-  }
+  let lineContainer = createDIV(CONTAINER);
+
+  return lineContainer;
 }
 
 // create wrapper > and color box in line container
 function createCubeDOM() {
   const boxSize = 9;
-  let lineFloor = createDIV(WRAPPER);
+  let wrapper = createDIV(WRAPPER);
   for (let i = 0; i < boxSize; i++) {
-    lineFloor.append(createDIV(COLORBOX));
+    wrapper.append(createDIV(COLORBOX));
   }
-  return lineFloor;
+  return wrapper;
 }
 
 function inputCubeValue(cube, containerBox) {
