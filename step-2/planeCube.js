@@ -55,7 +55,7 @@ function getCube(cube, containerBox) {
     }
   }
   function getColor(containerBox) {
-    const colorSet = { R: 'red', W: 'darkgray', G: 'green', C: 'cyan', B: 'blue' };
+    const colorSet = { R: '	#FF46C5', W: '#FF8C0A', G: '#6ED746', C: '#A0AFFF', B: '#5050FF' };
     let colorBox = containerBox.children;
     for (let i = 0; i < colorBox.length; i++) {
       colorBox[i].style.background = colorSet[colorBox[i].innerText];
@@ -194,6 +194,7 @@ const getInputValue = function () {
 // 공백제거
 // 문자열 유효한지 검사
 const valueCheck = function (value) {
+  let checkValue = true;
   let valueArr = value.split('');
   let upperValueArr = valueArr.map((e) => e.toUpperCase());
   let noSpaceArr = delSpace(upperValueArr);
@@ -201,6 +202,11 @@ const valueCheck = function (value) {
   checkSingleQuote(noSpaceArr);
   let noSingleQuoteArr = delSingleQuote(noSpaceArr);
   stringCheck(noSingleQuoteArr);
+  if (checkValue) {
+    return noSingleQuoteArr;
+  } else if (!checkValue) {
+    return checkValue;
+  }
 
   function delSpace(value) {
     let noSpaceArr = [];
@@ -215,6 +221,8 @@ const valueCheck = function (value) {
     if (value.length === 0) {
       alert('값을 입력해주세요.(빈칸입니다.)');
       $inputBox.focus();
+      checkValue = false;
+      return checkValue;
     }
   }
   function checkSingleQuote(value) {
@@ -227,6 +235,8 @@ const valueCheck = function (value) {
     if (count !== 0) {
       alert('잘못된 입력입니다.(sigleQuote연속)');
       resetFocus();
+      checkValue = false;
+      return checkValue;
     }
     return value;
   }
@@ -252,15 +262,18 @@ const valueCheck = function (value) {
     if (count !== 0) {
       alert("알 수 없는 입력값이 있습니다.\n(유효한 입력값: U, U', R, R', L, L', B, B', Q)");
       resetFocus();
+      checkValue = false;
+      return checkValue;
     }
   }
-  return noSingleQuoteArr;
 };
 
 // movePart
 const findingMove = function () {
   let command = getInputValue();
-  console.log(command);
+  if (command === false) {
+    return;
+  }
   for (let i = 0; i < command.length; i++) {
     for (let j = 0; j < stringSet.length; j++) {
       if (command[i] === stringSet[j]) {
@@ -269,6 +282,7 @@ const findingMove = function () {
       }
     }
   }
+  resetFocus();
 };
 
 const movingCube = function (value) {
