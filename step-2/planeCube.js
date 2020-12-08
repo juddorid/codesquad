@@ -195,8 +195,7 @@ const valueCheck = function (value) {
   let noSpaceArr = delSpace(upperValueArr);
   checkSingleQuote(noSpaceArr);
   let noSingleQuoteArr = delSingleQuote(noSpaceArr);
-  stringCheck(noSpaceArr);
-  // checkString(noSingleQuoteArr);
+  stringCheck(noSingleQuoteArr);
 
   function spaceCheck(value) {
     if (value.length === 0) {
@@ -256,6 +255,35 @@ const valueCheck = function (value) {
 };
 
 // movePart
-const movingCube = function () {
+const findingMove = function () {
   let command = getInputValue();
+  for (let i = 0; i < command.length; i++) {
+    for (let j = 0; j < stringSet.length; j++) {
+      if (command[i] === stringSet[j]) {
+        movingCube(command[i]);
+      }
+    }
+  }
+};
+
+const movingCube = function (value) {
+  if (value === stringSet[0]) {
+    upperLeft(myCube);
+  } else if (value === stringSet[1]) {
+    upperRight(myCube);
+  } else if (value === stringSet[2]) {
+    rightUp(myCube);
+  } else if (value === stringSet[3]) {
+    rightDown(myCube);
+  } else if (value === stringSet[4]) {
+    leftDown(myCube);
+  } else if (value === stringSet[5]) {
+    leftUp(myCube);
+  } else if (value === stringSet[6]) {
+    bottomRight(myCube);
+  } else if (value === stringSet[7]) {
+    bottomLeft(myCube);
+  } else if (value === stringSet[8]) {
+    quitBye();
+  }
 };
