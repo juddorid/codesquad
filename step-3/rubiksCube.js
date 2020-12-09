@@ -208,6 +208,17 @@ function rotateFront(arr) {
   leftToTop(myCube.get(keyLeft), myCube.get(keyTop));
   bottomToLeft(myCube.get(keyBottom), myCube.get(keyLeft));
   rightToBottom(fixed, myCube.get(keyBottom));
-  addCube();
   return rubiksCube;
+}
+
+function rotateFrontA(arr) {
+  rotateFront(arr);
+  addCube();
+}
+
+function rotateFrontB(arr) {
+  rotateFront(arr);
+  rotateFront(arr);
+  rotateFront(arr);
+  addCube();
 }
