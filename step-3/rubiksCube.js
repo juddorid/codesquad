@@ -155,6 +155,29 @@ cmdMap.set('m');
 cmdMap.set('q');
 cmdMap.set('s');
 
+function rotatePlane(arr) {
+  function planeSample() {
+    let num = 1;
+    let test = [];
+    for (let i = 0; i < 3; i++) {
+      let temp = [];
+      for (let j = 0; j < 3; j++) {
+        temp.push(num);
+        num++;
+      }
+      test.push(temp);
+    }
+    return test;
+  }
+  let rotatedArr = planeSample();
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr.length; j++) {
+      arr[i][j] = rotatedArr[j][i];
+    }
+  }
+  return arr;
+}
+
 function changeMapValue(key) {
   let myCube = new Map();
   myCube.set('F', cmdMap.get(key[0]));
@@ -209,34 +232,29 @@ function rotateB(cube) {
 }
 
 function rotate(cube) {
-  function rotateClockWise(cube) {
+  let standard = cube.get('F');
+  rotateClockWise(standard);
+  function rotateClockWise(arr) {
     function planeSample() {
-      let num = 1;
       let test = [];
       for (let i = 0; i < 3; i++) {
         let temp = [];
         for (let j = 0; j < 3; j++) {
-          temp.push(num);
-          num++;
+          temp.push(0);
         }
         test.push(temp);
       }
       return test;
     }
-    // array 90도 회전시키기
-    // 정면 90도 회전
-    let rotateArr = planeSample();
-    let standard = cube.get('F');
-    rotateArr[0][0] = standard[2][0];
-    rotateArr[0][1] = standard[1][0];
-    rotateArr[0][2] = standard[0][0];
-    rotateArr[1][0] = standard[2][1];
-    rotateArr[1][2] = standard[0][1];
-    rotateArr[2][0] = standard[2][2];
-    rotateArr[2][1] = standard[1][2];
-    rotateArr[2][2] = standard[0][2];
-    return rotateArr;
+    let rotatedArr = planeSample();
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < arr.length; j++) {
+        arr[i][j] = rotatedArr[j][i];
+      }
+    }
+    return arr;
   }
+
   // 한쪽면 값 먼저 get
   function fix(right) {
     let fix = [right[0][0], right[1][0], right[2][0]];
@@ -285,3 +303,151 @@ function rotate(cube) {
   rightToDown(fixed, cubeDown);
   return rubiksCube;
 }
+
+// Q
+const quitBye = function () {
+  $inputBox.value = 'BYE~!';
+};
+
+// getInputValue
+const getInputValue = function () {
+  let inputValue = $inputBox.value;
+  let lastValue = valueCheck(inputValue);
+  console.log(lastValue);
+  return lastValue;
+};
+
+// (singleQuote 정리)
+// 공백제거
+// 문자열 유효한지 검사
+const valueCheck = function (value) {
+  let checkValue = true;
+  let valueArr = value.split('');
+  let upperValueArr = valueArr.map((e) => e.toUpperCase());
+  let noSpaceArr = delSpace(upperValueArr);
+  spaceCheck(noSpaceArr);
+  checkSingleQuote(noSpaceArr);
+  let noSingleQuoteArr = delSingleQuote(noSpaceArr);
+  stringCheck(noSingleQuoteArr);
+  if (checkValue) {
+    return noSingleQuoteArr;
+  } else if (!checkValue) {
+    return checkValue;
+  }
+
+  function delSpace(value) {
+    let noSpaceArr = [];
+    for (let i = 0; i < value.length; i++) {
+      if (value[i] !== ' ') {
+        noSpaceArr.push(value[i]);
+      }
+    }
+    return noSpaceArr;
+  }
+  function spaceCheck(value) {
+    if (value.length === 0) {
+      alert('값을 입력해주세요.(빈칸입니다.)');
+      $inputBox.focus();
+      checkValue = false;
+      return checkValue;
+    }
+  }
+  function checkSingleQuote(value) {
+    let count = 0;
+    for (let i = 0; i < value.length; i++) {
+      if (value[i] === "'" && value[i - 1] === "'") {
+        count++;
+      }
+    }
+    if (count !== 0) {
+      alert('잘못된 입력입니다.(sigleQuote연속)');
+      resetFocus();
+      checkValue = false;
+      return checkValue;
+    }
+    return value;
+  }
+  function delSingleQuote(value) {
+    let noSingleQuoteArr = [];
+    for (let i = 0; i < value.length; i++) {
+      if (value[i] === "'") {
+        noSingleQuoteArr.pop();
+        noSingleQuoteArr.push(value[i - 1] + value[i]);
+      } else {
+        noSingleQuoteArr.push(value[i]);
+      }
+    }
+    return noSingleQuoteArr;
+  }
+  function stringCheck(value) {
+    let count = 0;
+    for (let i = 0; i < value.length; i++) {
+      if (!commandSet.includes(value[i])) {
+        count++;
+      }
+    }
+    if (count !== 0) {
+      alert('알 수 없는 입력값이 있습니다.');
+      resetFocus();
+      checkValue = false;
+      return checkValue;
+    }
+  }
+};
+
+// movePart
+const findingMove = function () {
+  let command = getInputValue();
+  if (command === false) {
+    return;
+  }
+  for (let i = 0; i < command.length; i++) {
+    for (let j = 0; j < commandSet.length; j++) {
+      if (command[i] === commandSet[j]) {
+        // getCommandViewBox(command[i]);
+        // movingCube(command[i]);
+      }
+    }
+  }
+  resetFocus();
+};
+
+const movingCube = function (value) {
+  switch (value) {
+    case commandSet[0]:
+      upperLeft(newCube);
+      break;
+    case commandSet[1]:
+      upperRight(newCube);
+      break;
+    case commandSet[2]:
+      rightUp(newCube);
+      break;
+    case commandSet[3]:
+      rightDown(newCube);
+      break;
+    case commandSet[4]:
+      leftDown(newCube);
+      break;
+    case commandSet[5]:
+      leftUp(newCube);
+      break;
+    case commandSet[6]:
+      bottomRight(newCube);
+      break;
+    case commandSet[7]:
+      bottomLeft(newCube);
+      break;
+    case commandSet[8]:
+      quitBye();
+      break;
+    default:
+      break;
+  }
+};
+
+// reset
+const resetFocus = function () {
+  $inputBox.value = '';
+  $inputBox.focus();
+};
