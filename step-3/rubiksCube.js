@@ -115,66 +115,117 @@ function getCubeArray(cube) {
   return cubeArray;
 }
 
-let myCube = new Map();
+let key = 'FLRBTO';
+let keyArr = key.split('');
 
-let keyTop = 'top';
-let keyFront = 'front';
-let keyBack = 'back';
-let keyRight = 'right';
-let keyLeft = 'left';
-let keyBottom = 'bottom';
+let mykeyMap = new Map();
+mykeyMap.set('F', 'FLRBTO');
+mykeyMap.set('L', 'LBFRTO');
+mykeyMap.set('R', 'RFBLTO');
+mykeyMap.set('B', 'BRLFTO');
+mykeyMap.set('T', 'TLROBF');
+mykeyMap.set('O', 'OLRTFB');
 
-let colorTop = 'B';
-let colorFront = 'O';
-let colorBack = 'Y';
-let colorRight = 'G';
-let colorLeft = 'W';
-let colorBottom = 'R';
-
-myCube.set(keyTop, rubiksCube[0]);
-myCube.set(keyFront, rubiksCube[2]);
-myCube.set(keyBack, rubiksCube[4]);
-myCube.set(keyRight, rubiksCube[3]);
-myCube.set(keyLeft, rubiksCube[1]);
-myCube.set(keyBottom, rubiksCube[5]);
-
-// F : front가 시계 방향으로 (오른쪽으로)
-// F => 90도 회전
-// T_bottom => R_elft => B_top => L_right => T_bottom
-
-// array 90도 회전시키기
-
-function planeSample() {
-  let num = 1;
-  let test = [];
-  for (let i = 0; i < 3; i++) {
-    let temp = [];
-    for (let j = 0; j < 3; j++) {
-      temp.push(num);
-      num++;
-    }
-    test.push(temp);
-  }
-  return test;
+function getKey(value) {
+  key = mykeyMap.get(value);
+  keyArr = key.split('');
+  return keyArr;
 }
 
-function rotateFront(arr) {
-  function rotateRight(front) {
+let keyFront = 'F';
+let keyLeft = 'L';
+let keyRight = 'R';
+let keyBottom = 'B';
+let keyTop = 'T';
+let keyBack = 'O';
+
+let myCube = new Map();
+
+myCube.set('F', rubiksCube[2]);
+myCube.set('L', rubiksCube[1]);
+myCube.set('R', rubiksCube[3]);
+myCube.set('B', rubiksCube[5]);
+myCube.set('T', rubiksCube[0]);
+myCube.set('O', rubiksCube[4]);
+
+// default key
+function getCurrentKey(value) {
+  let current = [0, 0, 0, 0, 0, 0];
+  let newKeyList = getKey(value);
+  let currentKeyList = current.map((e, i) => (e = newKeyList[i]));
+  return currentKeyList;
+}
+
+let currentKey = getCurrentKey('L');
+
+function getNewKey(value) {
+  let currentKeyList = getCurrentKey(value);
+  keyFront = currentKeyList[0];
+  keyLeft = currentKeyList[1];
+  keyRight = currentKeyList[2];
+  keyBottom = currentKeyList[3];
+  keyTop = currentKeyList[4];
+  keyBack = currentKeyList[5];
+}
+
+let cubeTop = myCube.get(keyTop);
+let cubeLeft = myCube.get(keyLeft);
+let cubeFront = myCube.get(keyFront);
+let cubeRight = myCube.get(keyRight);
+let cubeBack = myCube.get(keyBack);
+let cubeBottom = myCube.get(keyBottom);
+
+// 상대값으로 위치를 다시 명명해주면?
+// 처음에는 F가 F인데, R을 돌려! 하면 R이 F인거야
+// 그러면 R을 F라고 하고, 각자가 위치를 다시 생각한다
+// 명령에 따라 큐브의 정면이 바뀐다
+// 큐브 자체가 돌아가는 설정
+// F: fornt // L: left // R: right // B: bottom // T: top // O: opposite
+/////////////////////////////////////////////////////////////////////////
+// FLRBTO (standard) // 처음 알파벳이 정면
+// FLRBTO
+// RFBLTO
+// BRLFTO
+// LBFRTO
+// TLROBF
+// OLRTFB
+/////////////////////////////////////////////////////////////////////////
+
+function rotate(command) {
+  function rotateClockWise(command) {
+    function planeSample() {
+      let num = 1;
+      let test = [];
+      for (let i = 0; i < 3; i++) {
+        let temp = [];
+        for (let j = 0; j < 3; j++) {
+          temp.push(num);
+          num++;
+        }
+        test.push(temp);
+      }
+      return test;
+    }
+    // array 90도 회전시키기
+    // 정면 90도 회전
     let rotateArr = planeSample();
-    rotateArr[0][0] = arr[2][0];
-    rotateArr[0][1] = arr[1][0];
-    rotateArr[0][2] = arr[0][0];
-    rotateArr[1][0] = arr[2][1];
-    rotateArr[1][2] = arr[0][1];
-    rotateArr[2][0] = arr[2][2];
-    rotateArr[2][1] = arr[1][2];
-    rotateArr[2][2] = arr[0][2];
+    rotateArr[0][0] = command[2][0];
+    rotateArr[0][1] = command[1][0];
+    rotateArr[0][2] = command[0][0];
+    rotateArr[1][0] = command[2][1];
+    rotateArr[1][2] = command[0][1];
+    rotateArr[2][0] = command[2][2];
+    rotateArr[2][1] = command[1][2];
+    rotateArr[2][2] = command[0][2];
     return rotateArr;
   }
+  // 한쪽면 값 먼저 get
   function fix(right) {
     let fix = [right[0][0], right[1][0], right[2][0]];
     return fix;
   }
+  // 기준면의 주변면의 회전 루틴
+  // T_bottom => R_elft => B_top => L_right => T_bottom
   function topToRight(top, right) {
     right[0][0] = top[2][0];
     right[1][0] = top[2][1];
@@ -202,23 +253,27 @@ function rotateFront(arr) {
     bottom[0][2] = fix[2];
     return fix;
   }
-  let fixed = fix(myCube.get(keyRight));
-  rotateRight(myCube.get(keyFront));
-  topToRight(myCube.get(keyTop), myCube.get(keyRight));
-  leftToTop(myCube.get(keyLeft), myCube.get(keyTop));
-  bottomToLeft(myCube.get(keyBottom), myCube.get(keyLeft));
-  rightToBottom(fixed, myCube.get(keyBottom));
+
+  // operating
+  let fixed = fix(cubeRight);
+  rotateClockWise(command);
+  topToRight(cubeTop, cubeRight);
+  leftToTop(cubeLeft, cubeTop);
+  bottomToLeft(cubeBottom, cubeLeft);
+  rightToBottom(fixed, cubeBottom);
   return rubiksCube;
 }
 
-function rotateFrontA(arr) {
-  rotateFront(arr);
+// F
+function rotateFrontA(command) {
+  rotate(command);
   addCube();
 }
 
-function rotateFrontB(arr) {
-  rotateFront(arr);
-  rotateFront(arr);
-  rotateFront(arr);
+// F'
+function rotateFrontB(command) {
+  rotate(command);
+  rotate(command);
+  rotate(command);
   addCube();
 }
