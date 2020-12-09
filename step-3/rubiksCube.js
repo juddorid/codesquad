@@ -6,12 +6,13 @@ const VIEW_CONTAINER = 'view_container';
 const LINE_CONTAINER = 'line_container';
 const WRAPPER = 'wrapper';
 const COLORBOX = 'color_box';
-
 const $outputBox = document.querySelector('#output_box');
 const $inputButton = document.querySelector('#input_btn');
 const $inputBox = document.querySelector('body > div > div.input_container > input.input_box');
+
 let cubeCount = 0;
 
+// init
 let rubiksCube = getRubiksCube(colorSet);
 let cube = addCube();
 
@@ -115,84 +116,78 @@ function getCubeArray(cube) {
   return cubeArray;
 }
 
-let key = 'FLRBTO';
-let keyArr = key.split('');
-
-let mykeyMap = new Map();
-mykeyMap.set('F', 'FLRBTO');
-mykeyMap.set('L', 'LBFRTO');
-mykeyMap.set('R', 'RFBLTO');
-mykeyMap.set('B', 'BRLFTO');
-mykeyMap.set('T', 'TLROBF');
-mykeyMap.set('O', 'OLRTFB');
+// let key = 'FLRDUB';
+// let keyArr = key.split('');
 
 function getKey(value) {
+  let mykeyMap = new Map();
+  mykeyMap.set('F', 'FLRBUD');
+  mykeyMap.set('L', 'LBFRUD');
+  mykeyMap.set('R', 'RFBLUD');
+  mykeyMap.set('D', 'DLRUFB');
+  mykeyMap.set('U', 'ULRDBF');
+  mykeyMap.set('B', 'BRLFUD');
+
   key = mykeyMap.get(value);
   keyArr = key.split('');
   return keyArr;
 }
 
-let keyFront = 'F';
-let keyLeft = 'L';
-let keyRight = 'R';
-let keyBottom = 'B';
-let keyTop = 'T';
-let keyBack = 'O';
+let cmdMap = new Map();
+cmdMap.set('F', rubiksCube[2]);
+cmdMap.set('L', rubiksCube[1]);
+cmdMap.set('R', rubiksCube[3]);
+cmdMap.set('B', rubiksCube[4]);
+cmdMap.set('U', rubiksCube[0]);
+cmdMap.set('D', rubiksCube[5]);
 
-let myCube = new Map();
-
-myCube.set('F', rubiksCube[2]);
-myCube.set('L', rubiksCube[1]);
-myCube.set('R', rubiksCube[3]);
-myCube.set('B', rubiksCube[5]);
-myCube.set('T', rubiksCube[0]);
-myCube.set('O', rubiksCube[4]);
-
-// default key
-function getCurrentKey(value) {
-  let current = [0, 0, 0, 0, 0, 0];
-  let newKeyList = getKey(value);
-  let currentKeyList = current.map((e, i) => (e = newKeyList[i]));
-  return currentKeyList;
+function changeMapValue(key) {
+  let myCube = new Map();
+  myCube.set('F', cmdMap.get(key[0]));
+  myCube.set('L', cmdMap.get(key[1]));
+  myCube.set('R', cmdMap.get(key[2]));
+  myCube.set('B', cmdMap.get(key[3]));
+  myCube.set('U', cmdMap.get(key[4]));
+  myCube.set('D', cmdMap.get(key[5]));
+  return myCube;
 }
 
-let currentKey = getCurrentKey('L');
-
-function getNewKey(value) {
-  let currentKeyList = getCurrentKey(value);
-  keyFront = currentKeyList[0];
-  keyLeft = currentKeyList[1];
-  keyRight = currentKeyList[2];
-  keyBottom = currentKeyList[3];
-  keyTop = currentKeyList[4];
-  keyBack = currentKeyList[5];
-}
-
-let cubeTop = myCube.get(keyTop);
-let cubeLeft = myCube.get(keyLeft);
-let cubeFront = myCube.get(keyFront);
-let cubeRight = myCube.get(keyRight);
-let cubeBack = myCube.get(keyBack);
-let cubeBottom = myCube.get(keyBottom);
+// 입력받은 value를 getKey에 넣어주면, myCube에 value기준으로 큐브를 다시 세팅
+let currentKey = getKey('L');
+let myCube = changeMapValue(currentKey);
 
 // 상대값으로 위치를 다시 명명해주면?
 // 처음에는 F가 F인데, R을 돌려! 하면 R이 F인거야
 // 그러면 R을 F라고 하고, 각자가 위치를 다시 생각한다
 // 명령에 따라 큐브의 정면이 바뀐다
 // 큐브 자체가 돌아가는 설정
-// F: fornt // L: left // R: right // B: bottom // T: top // O: opposite
+// F: fornt // L: left // R: right // D: down // U: up // B: back
 /////////////////////////////////////////////////////////////////////////
-// FLRBTO (standard) // 처음 알파벳이 정면
-// FLRBTO
-// RFBLTO
-// BRLFTO
-// LBFRTO
-// TLROBF
-// OLRTFB
+// FLRDUB (standard) // 처음 알파벳이 정면
+// FLRDUB
+// RFDLUB
+// DRLFUB
+// LBFRUB
+// ULRBDF
+// BLRUFD
 /////////////////////////////////////////////////////////////////////////
 
-function rotate(command) {
-  function rotateClockWise(command) {
+// rotate right
+function rotateA(cube) {
+  rotate(cube);
+  addCube();
+}
+
+// rotate left
+function rotateB(cube) {
+  rotate(cube);
+  rotate(cube);
+  rotate(cube);
+  addCube();
+}
+
+function rotate(cube) {
+  function rotateClockWise(cube) {
     function planeSample() {
       let num = 1;
       let test = [];
@@ -209,14 +204,15 @@ function rotate(command) {
     // array 90도 회전시키기
     // 정면 90도 회전
     let rotateArr = planeSample();
-    rotateArr[0][0] = command[2][0];
-    rotateArr[0][1] = command[1][0];
-    rotateArr[0][2] = command[0][0];
-    rotateArr[1][0] = command[2][1];
-    rotateArr[1][2] = command[0][1];
-    rotateArr[2][0] = command[2][2];
-    rotateArr[2][1] = command[1][2];
-    rotateArr[2][2] = command[0][2];
+    let standard = cube.get('F');
+    rotateArr[0][0] = standard[2][0];
+    rotateArr[0][1] = standard[1][0];
+    rotateArr[0][2] = standard[0][0];
+    rotateArr[1][0] = standard[2][1];
+    rotateArr[1][2] = standard[0][1];
+    rotateArr[2][0] = standard[2][2];
+    rotateArr[2][1] = standard[1][2];
+    rotateArr[2][2] = standard[0][2];
     return rotateArr;
   }
   // 한쪽면 값 먼저 get
@@ -226,54 +222,44 @@ function rotate(command) {
   }
   // 기준면의 주변면의 회전 루틴
   // T_bottom => R_elft => B_top => L_right => T_bottom
-  function topToRight(top, right) {
-    right[0][0] = top[2][0];
-    right[1][0] = top[2][1];
-    right[2][0] = top[2][2];
+  function upToRight(up, right) {
+    right[0][0] = up[2][0];
+    right[1][0] = up[2][1];
+    right[2][0] = up[2][2];
     return right;
   }
 
-  function leftToTop(left, top) {
-    top[2][0] = left[2][2];
-    top[2][1] = left[1][2];
-    top[2][2] = left[0][2];
-    return top;
+  function leftToUp(left, up) {
+    up[2][0] = left[2][2];
+    up[2][1] = left[1][2];
+    up[2][2] = left[0][2];
+    return up;
   }
 
-  function bottomToLeft(bottom, left) {
-    left[0][2] = bottom[0][0];
-    left[1][2] = bottom[0][1];
-    left[2][2] = bottom[0][2];
+  function downToLeft(down, left) {
+    left[0][2] = down[0][0];
+    left[1][2] = down[0][1];
+    left[2][2] = down[0][2];
     return left;
   }
 
-  function rightToBottom(fix, bottom) {
-    bottom[0][0] = fix[0];
-    bottom[0][1] = fix[1];
-    bottom[0][2] = fix[2];
+  function rightToDown(fix, down) {
+    down[0][0] = fix[0];
+    down[0][1] = fix[1];
+    down[0][2] = fix[2];
     return fix;
   }
+  let cubeUp = cube.get('U');
+  let cubeRight = cube.get('R');
+  let cubeLeft = cube.get('L');
+  let cubeDown = cube.get('D');
 
   // operating
   let fixed = fix(cubeRight);
-  rotateClockWise(command);
-  topToRight(cubeTop, cubeRight);
-  leftToTop(cubeLeft, cubeTop);
-  bottomToLeft(cubeBottom, cubeLeft);
-  rightToBottom(fixed, cubeBottom);
+  rotateClockWise(cube);
+  upToRight(cubeUp, cubeRight);
+  leftToUp(cubeLeft, cubeUp);
+  downToLeft(cubeDown, cubeLeft);
+  rightToDown(fixed, cubeDown);
   return rubiksCube;
-}
-
-// F
-function rotateFrontA(command) {
-  rotate(command);
-  addCube();
-}
-
-// F'
-function rotateFrontB(command) {
-  rotate(command);
-  rotate(command);
-  rotate(command);
-  addCube();
 }
