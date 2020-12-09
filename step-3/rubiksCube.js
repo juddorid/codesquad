@@ -121,12 +121,12 @@ function getCubeArray(cube) {
 
 function getKey(value) {
   let mykeyMap = new Map();
-  mykeyMap.set('F', 'FLRBUD');
-  mykeyMap.set('L', 'LBFRUD');
-  mykeyMap.set('R', 'RFBLUD');
-  mykeyMap.set('D', 'DLRUFB');
-  mykeyMap.set('U', 'ULRDBF');
-  mykeyMap.set('B', 'BRLFUD');
+  mykeyMap.set('F', 'FUDLR');
+  mykeyMap.set('L', 'LteBF');
+  mykeyMap.set('R', 'RvcFB');
+  mykeyMap.set('B', 'BNSRL');
+  mykeyMap.set('U', 'UTFmq');
+  mykeyMap.set('D', 'DFTks');
 
   key = mykeyMap.get(value);
   keyArr = key.split('');
@@ -141,19 +141,32 @@ cmdMap.set('B', rubiksCube[4]);
 cmdMap.set('U', rubiksCube[0]);
 cmdMap.set('D', rubiksCube[5]);
 
+// 회전된 배열 필요
+// U-90 = t / U90 = v / U180 = N / D-90 = c / D90 = e / D180 = S / B180 = T / L-90 = k / L90 = m / R-90 = q / R90 = s
+cmdMap.set('t');
+cmdMap.set('v');
+cmdMap.set('c');
+cmdMap.set('e');
+cmdMap.set('N');
+cmdMap.set('S');
+cmdMap.set('T');
+cmdMap.set('k');
+cmdMap.set('m');
+cmdMap.set('q');
+cmdMap.set('s');
+
 function changeMapValue(key) {
   let myCube = new Map();
   myCube.set('F', cmdMap.get(key[0]));
-  myCube.set('L', cmdMap.get(key[1]));
-  myCube.set('R', cmdMap.get(key[2]));
-  myCube.set('B', cmdMap.get(key[3]));
-  myCube.set('U', cmdMap.get(key[4]));
-  myCube.set('D', cmdMap.get(key[5]));
+  myCube.set('U', cmdMap.get(key[1]));
+  myCube.set('D', cmdMap.get(key[2]));
+  myCube.set('L', cmdMap.get(key[3]));
+  myCube.set('R', cmdMap.get(key[4]));
   return myCube;
 }
 
 // 입력받은 value를 getKey에 넣어주면, myCube에 value기준으로 큐브를 다시 세팅
-let currentKey = getKey('L');
+let currentKey = getKey('D');
 let myCube = changeMapValue(currentKey);
 
 // 상대값으로 위치를 다시 명명해주면?
@@ -162,14 +175,23 @@ let myCube = changeMapValue(currentKey);
 // 명령에 따라 큐브의 정면이 바뀐다
 // 큐브 자체가 돌아가는 설정
 // F: fornt // L: left // R: right // D: down // U: up // B: back
+
+// 기준면을 바꾸면 큐브를 돌리는 것과 같다
+// 기준면을 바꾸려면 기준면이 바뀌는 것에 따라 모든 면을 회전시켜줘야 한다
+// 옆으로 돌리면 위, 아래가 돌아간다
+// 단순히 면을 바꿔주는게 아니라.. 밀어내기를 하는게 맞을 수도 있을 것 같다
+
+// 다시 정리하자면,
+// 반대쪽면은 제외할 수 있다
+// 기준면을 기준으로 상하좌우만 생각하면 된다
+// 놓쳤던 점은 기준면을 바꿀 때, 관계된 면들이 회전하는 것
 /////////////////////////////////////////////////////////////////////////
-// FLRDUB (standard) // 처음 알파벳이 정면
-// FLRDUB
-// RFDLUB
-// DRLFUB
-// LBFRUB
-// ULRBDF
-// BLRUFD
+// F(standard) => U D L R
+// L => U: U -90 / D: D 90 / L: B / R: F
+// R => U: U 90 / D: D -90 / L: F / R: B
+// B => U: U 180 / D: D 180 / L: R / R: L
+// U => U: B 180 / D: F / L: L 90 / R: R -90
+// D => U: F / D: B 180 / L: L -90 / R: R 90
 /////////////////////////////////////////////////////////////////////////
 
 // rotate right
