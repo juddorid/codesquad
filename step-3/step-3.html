@@ -21,6 +21,9 @@
         text-align: center;
         margin: 5px auto;
         padding: 5px;
+        justify-content: center;
+        align-items: center;
+        display: flex;
       }
       .nav_box {
         height: 50px;
@@ -49,7 +52,7 @@
         font-size: 20px;
         color: white;
         text-align: center;
-        padding: 10px 0;
+        padding: 5px 0;
       }
       .input_container {
         justify-content: center;
@@ -116,7 +119,7 @@
       <div class="input_container">
         <input class="input_button" type="button" value="CUBE   >>> " onClick="window.location.reload()" />
         <input type="text" class="input_box" />
-        <input type="submit" class="input_button" id="input_btn" value="GO!" onclick="findingMove()" />
+        <input type="submit" class="input_button" id="input_btn" value="GO!" onclick="addCube()" />
       </div>
       <div class="output_container" id="output_box"></div>
     </div>

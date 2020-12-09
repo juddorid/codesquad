@@ -13,8 +13,7 @@ const $inputBox = document.querySelector('body > div > div.input_container > inp
 let cubeCount = 0;
 
 let rubiksCube = getRubiksCube(colorSet);
-let boxes = inputCubeBox($outputBox, VIEW_CONTAINER);
-let cube = drawCube(boxes, LINE_CONTAINER);
+let cube = addCube();
 
 // rubiks cube
 function getRubiksCube(set) {
@@ -37,8 +36,32 @@ function getRubiksCube(set) {
   return rubiksCube;
 }
 
-// input cube in the box
-function inputCubeBox(box, className) {
+// add cube
+function addCube() {
+  // input cube value
+  function inputCubeValue(cube, containerBox) {
+    let cubeArray = getCubeArray(cube);
+    for (let i = 0; i < containerBox.length; i++) {
+      containerBox[i].innerText = cubeArray[i];
+    }
+  }
+  // input cube color
+  function getColor(containerBox) {
+    const colorSet = { B: 'purple', W: 'darkgray', O: 'orange', G: 'green', Y: 'yellowgreen', R: 'red' };
+    for (let i = 0; i < containerBox.length; i++) {
+      containerBox[i].style.background = colorSet[colorBox[i].innerText];
+    }
+  }
+  let bigBox = createBox($outputBox, VIEW_CONTAINER);
+  let cube = drawCube(bigBox, LINE_CONTAINER);
+  let colorBox = cube.getElementsByClassName(COLORBOX);
+  inputCubeValue(rubiksCube, colorBox);
+  getColor(colorBox);
+  return cube;
+}
+
+// create box
+function createBox(box, className) {
   let container = createDIV(className);
   box.append(container);
   return container;
@@ -61,6 +84,8 @@ function drawCube(box, className) {
   oneWrapper();
   middleWrapper();
   oneWrapper();
+
+  return box;
 }
 // create div
 function createDIV(className) {
@@ -91,24 +116,6 @@ function getCubeArray(cube) {
   return cubeArray;
 }
 
-// input cube value
-function inputCubeValue(cube, containerBox) {
-  let cubeArray = getCubeArray(cube);
-  let colorBox = containerBox.children;
-  for (let i = 0; i < colorBox.length; i++) {
-    colorBox[i].innerText = cubeArray[i];
-  }
-}
-
-function getColor(containerBox) {
-  const colorSet = { B: 'brown', W: 'lightgray', O: 'orange', G: 'green', Y: 'yellow', R: 'red' };
-  let colorBox = containerBox.children;
-  for (let i = 0; i < colorBox.length; i++) {
-    colorBox[i].style.background = colorSet[colorBox[i].innerText];
-  }
-}
-
-// let box = createCubeDOM();
 // inputCubeValue(cube, box);
 // getColor(box);
 // containerBox.append(box);
