@@ -1,5 +1,5 @@
 const colorSet = ['B', 'W', 'O', 'G', 'Y', 'R'];
-const commandSet = ['F', 'R', 'U', 'B', 'L', 'D'];
+const commandSet = ['F', "F'", 'R', "R'", 'U', "U'", 'B', "B'", 'L', "L'", 'D', "D'", 'Q'];
 const RUBIKS = 3;
 const MIDDLE = 4;
 const VIEW_CONTAINER = 'view_container';
@@ -84,7 +84,6 @@ function drawCube(box, className) {
   oneWrapper();
   middleWrapper();
   oneWrapper();
-
   return box;
 }
 // create div
@@ -116,7 +115,99 @@ function getCubeArray(cube) {
   return cubeArray;
 }
 
-// inputCubeValue(cube, box);
-// getColor(box);
-// containerBox.append(box);
-// wrapperCount++;
+let myCube = new Map();
+
+let keyTop = 'top';
+let keyFront = 'front';
+let keyBack = 'back';
+let keyRight = 'right';
+let keyLeft = 'left';
+let keyBottom = 'bottom';
+
+let colorTop = 'B';
+let colorFront = 'O';
+let colorBack = 'Y';
+let colorRight = 'G';
+let colorLeft = 'W';
+let colorBottom = 'R';
+
+myCube.set(keyTop, rubiksCube[0]);
+myCube.set(keyFront, rubiksCube[2]);
+myCube.set(keyBack, rubiksCube[4]);
+myCube.set(keyRight, rubiksCube[3]);
+myCube.set(keyLeft, rubiksCube[1]);
+myCube.set(keyBottom, rubiksCube[5]);
+
+// F : front가 시계 방향으로 (오른쪽으로)
+// F => 90도 회전
+// T_bottom => R_elft => B_top => L_right => T_bottom
+
+// array 90도 회전시키기
+
+function planeSample() {
+  let num = 1;
+  let test = [];
+  for (let i = 0; i < 3; i++) {
+    let temp = [];
+    for (let j = 0; j < 3; j++) {
+      temp.push(num);
+      num++;
+    }
+    test.push(temp);
+  }
+  return test;
+}
+
+function rotateFront(arr) {
+  function rotateRight(front) {
+    let rotateArr = planeSample();
+    rotateArr[0][0] = arr[2][0];
+    rotateArr[0][1] = arr[1][0];
+    rotateArr[0][2] = arr[0][0];
+    rotateArr[1][0] = arr[2][1];
+    rotateArr[1][2] = arr[0][1];
+    rotateArr[2][0] = arr[2][2];
+    rotateArr[2][1] = arr[1][2];
+    rotateArr[2][2] = arr[0][2];
+    return rotateArr;
+  }
+  function fix(right) {
+    let fix = [right[0][0], right[1][0], right[2][0]];
+    return fix;
+  }
+  function topToRight(top, right) {
+    right[0][0] = top[2][0];
+    right[1][0] = top[2][1];
+    right[2][0] = top[2][2];
+    return right;
+  }
+
+  function leftToTop(left, top) {
+    top[2][0] = left[2][2];
+    top[2][1] = left[1][2];
+    top[2][2] = left[0][2];
+    return top;
+  }
+
+  function bottomToLeft(bottom, left) {
+    left[0][2] = bottom[0][0];
+    left[1][2] = bottom[0][1];
+    left[2][2] = bottom[0][2];
+    return left;
+  }
+
+  function rightToBottom(fix, bottom) {
+    bottom[0][0] = fix[0];
+    bottom[0][1] = fix[1];
+    bottom[0][2] = fix[2];
+    return fix;
+  }
+  let fixed = fix(myCube.get(keyRight));
+  rotateRight(myCube.get(keyFront));
+  topToRight(myCube.get(keyTop), myCube.get(keyRight));
+  leftToTop(myCube.get(keyLeft), myCube.get(keyTop));
+  bottomToLeft(myCube.get(keyBottom), myCube.get(keyLeft));
+  rightToBottom(fixed, myCube.get(keyBottom));
+  addCube();
+  return rubiksCube;
+}
