@@ -1,7 +1,6 @@
-const colorList = ['B', 'W', 'O', 'G', 'Y', 'R'];
+const colorSet = ['B', 'W', 'O', 'G', 'Y', 'R'];
 const commandSet = ['F', "F'", 'R', "R'", 'U', "U'", 'B', "B'", 'L', "L'", 'D', "D'", 'Q'];
 const RUBIKS = 3;
-const FACES = 6;
 const MIDDLE = 4;
 const VIEW_CONTAINER = 'view_container';
 const LINE_CONTAINER = 'line_container';
@@ -11,134 +10,53 @@ const $outputBox = document.querySelector('#output_box');
 const $inputButton = document.querySelector('#input_btn');
 const $inputBox = document.querySelector('body > div > div.input_container > input.input_box');
 
-let a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-let b = [];
-
-for (let i = 0; i < a.length; i++) {
-  let c = [];
-  for (let j = 0; j < 2; j++) {
-    c.push(a[j]);
-  }
-  b.push(c);
-}
-
 let cubeCount = 0;
-// const newCube = [
-//   [
-//     [0, 1, 2],
-//     [3, 4, 5],
-//     [6, 7, 8],
-//   ],
-//   [
-//     [
-//       [9, 10, 11],
-//       [12, 13, 14],
-//       [15, 16, 17],
-//     ],
-//     [
-//       [18, 19, 20],
-//       [21, 22, 23],
-//       [24, 25, 26],
-//     ],
-//     [
-//       [27, 28, 29],
-//       [30, 31, 32],
-//       [33, 34, 35],
-//     ],
-//     [
-//       [36, 37, 38],
-//       [39, 40, 41],
-//       [42, 43, 44],
-//     ],
-//   ],
-//   [
-//     [45, 46, 47],
-//     [48, 49, 50],
-//     [51, 52, 53],
-//   ],
-// ];
-
-let rubiksUp = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-];
-let rubiksLeft = [
-  [9, 10, 11],
-  [12, 13, 14],
-  [15, 16, 17],
-];
-let rubiksFront = [
-  [18, 19, 20],
-  [21, 22, 23],
-  [24, 25, 26],
-];
-let rubiksRight = [
-  [27, 28, 29],
-  [30, 31, 32],
-  [33, 34, 35],
-];
-let rubiksBack = [
-  [36, 37, 38],
-  [39, 40, 41],
-  [42, 43, 44],
-];
-let rubiksDown = [
-  [45, 46, 47],
-  [48, 49, 50],
-  [51, 52, 53],
-];
 
 // init
-let rubiksCube = getRubiksCube();
+let rubiksCube = getRubiksCube(colorSet);
 let cube = addCube();
 
 // rubiks cube
-function getRubiksCube() {
-  let num = 1;
-  let rubiksCube = [];
-  for (let k = 0; k < FACES; k++) {
-    let face = [
-      [0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0],
-    ];
+function getRubiksCube(set) {
+  // plane cube
+  function getRubiks(color) {
+    let rubiks = [];
     for (let i = 0; i < RUBIKS; i++) {
+      let temp = [];
       for (let j = 0; j < RUBIKS; j++) {
-        face[i][j] = num;
-        num++;
+        temp.push(color);
       }
+      rubiks.push(temp);
     }
-    rubiksCube.push(face);
+    return rubiks;
+  }
+  let rubiksCube = [];
+  for (let i = 0; i < set.length; i++) {
+    rubiksCube.push(getRubiks(set[i]));
   }
   return rubiksCube;
 }
-const cubeFaces = ['U', 'L', 'F', 'R', 'B', 'D'];
-function getCubeMap() {
-  let myCubeMap = new Map();
-  for (let i = 0; i < FACES; i++) {
-    myCubeMap.set(cubeFaces[i], rubiksCube[i]);
-  }
-  return myCubeMap;
-}
-
-let myCubeMap = getCubeMap();
 
 // add cube
 function addCube() {
   // input cube value
-  function inputCubeValue(cube, pieceOfCube) {}
+  function inputCubeValue(cube, containerBox) {
+    let cubeArray = getCubeArray(cube);
+    for (let i = 0; i < containerBox.length; i++) {
+      containerBox[i].innerText = cubeArray[i];
+    }
+  }
   // input cube color
   function getColor(containerBox) {
-    const colorList = { B: 'purple', W: 'darkgray', O: 'orange', G: 'green', Y: 'yellowgreen', R: 'red' };
+    const colorSet = { B: 'purple', W: 'darkgray', O: 'orange', G: 'green', Y: 'yellowgreen', R: 'red' };
     for (let i = 0; i < containerBox.length; i++) {
-      containerBox[i].style.background = colorList[colorBox[i].innerText];
+      containerBox[i].style.background = colorSet[colorBox[i].innerText];
     }
   }
   let bigBox = createBox($outputBox, VIEW_CONTAINER);
   let cube = drawCube(bigBox, LINE_CONTAINER);
   let colorBox = cube.getElementsByClassName(COLORBOX);
-  inputCubeValue(newCube, colorBox);
+  inputCubeValue(rubiksCube, colorBox);
   getColor(colorBox);
   return cube;
 }
@@ -184,7 +102,6 @@ function createCubeDOM() {
   }
   return wrapper;
 }
-
 // get Cube Array
 function getCubeArray(cube) {
   let cubeArray = [];
@@ -202,98 +119,43 @@ function getCubeArray(cube) {
 // let keyArr = key.split('');
 
 function getKey(value) {
-  let mykeyMap = new Map();
-  mykeyMap.set('F', 'FUDLR');
-  mykeyMap.set('L', 'LteBF');
-  mykeyMap.set('R', 'RvcFB');
-  mykeyMap.set('B', 'BNSRL');
-  mykeyMap.set('U', 'UTFmq');
-  mykeyMap.set('D', 'DFTks');
+  let mykeyMap = {
+    F: { F: 'F', U: 'U', D: 'D', L: 'L', R: 'R' },
+    L: { F: 'L', U: 'U-90', D: 'D+90', L: 'B', R: 'F' },
+    R: { F: 'R', U: 'U+90', D: 'D-90', L: 'F', R: 'B' },
+    B: { F: 'B', U: 'U180', D: 'D180', L: 'R', R: 'L' },
+    U: { F: 'U', U: 'B180', D: 'F', L: 'L+90', R: 'R-90' },
+    D: { F: 'D', U: 'F', D: 'B180', L: 'L-90', R: 'R+90' },
+  };
 
   key = mykeyMap.get(value);
   keyArr = key.split('');
   return keyArr;
 }
 
-let cmdMap = new Map();
-cmdMap.set('F', rubiksCube[2]);
-cmdMap.set('L', rubiksCube[1]);
-cmdMap.set('R', rubiksCube[3]);
-cmdMap.set('B', rubiksCube[4]);
-cmdMap.set('U', rubiksCube[0]);
-cmdMap.set('D', rubiksCube[5]);
-
 // 회전된 배열 필요
-// U-90 = t / U90 = v / U180 = N / D-90 = c / D90 = e / D180 = S / B180 = T / L-90 = k / L90 = m / R-90 = q / R90 = s
-cmdMap.set('t');
-cmdMap.set('v');
-cmdMap.set('c');
-cmdMap.set('e');
-cmdMap.set('N');
-cmdMap.set('S');
-cmdMap.set('T');
-cmdMap.set('k');
-cmdMap.set('m');
-cmdMap.set('q');
-cmdMap.set('s');
 
-function copyArr() {
-  let count = 0;
-  let rowCount = 3;
-
-  let result = [];
-
-  for (let i = 0; i < rowCount; i++) {
-    let row = [];
-    for (let j = 0; j < rowCount; j++) {
-      row.push(count);
-      count++;
-    }
-    result.push(row);
-  }
-  return result;
-}
-
-function rotate90(arr) {
-  let newArr = JSON.parse(JSON.stringify(arr));
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr.length; j++) {
-      newArr[i][j] = arr[arr.length - j - 1][i];
+function rotate90(cube) {
+  let newArr = JSON.parse(JSON.stringify(cube));
+  for (let i = 0; i < cube.length; i++) {
+    for (let j = 0; j < cube.length; j++) {
+      newArr[i][j] = cube[cube.length - j - 1][i];
     }
   }
   return newArr;
 }
-function rotate270(arr) {
-  let rotatedArr = getFace();
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr.length; j++) {
-      arr[i][j] = rotatedArr[j][arr.length - i - 1];
-    }
-  }
-  return arr;
-}
-function rotate180(arr) {
-  let rotatedArr = getFace();
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr.length; j++) {
-      arr[i][j] = rotatedArr[arr.length - i - 1][arr.length - j - 1];
-    }
-  }
-  return arr;
-}
 
-function changeMapValue(key) {
-  let myCube = new Map();
-  myCube.set('F', cmdMap.get(key[0]));
-  myCube.set('U', cmdMap.get(key[1]));
-  myCube.set('D', cmdMap.get(key[2]));
-  myCube.set('L', cmdMap.get(key[3]));
-  myCube.set('R', cmdMap.get(key[4]));
-  return myCube;
-}
+let mykeyMap = {
+  F: { F: rubiksCube[2], U: rubiksCube[0], D: rubiksCube[5], L: rubiksCube[1], R: rubiksCube[3] },
+  L: { F: rubiksCube[1], U: 'U-90', D: 'D+90', L: rubiksCube[4], R: rubiksCube[2] },
+  R: { F: rubiksCube[3], U: 'U+90', D: 'D-90', L: rubiksCube[2], R: rubiksCube[4] },
+  B: { F: rubiksCube[4], U: 'U180', D: 'D180', L: rubiksCube[3], R: rubiksCube[1] },
+  U: { F: rubiksCube[0], U: 'B180', D: rubiksCube[2], L: 'L+90', R: 'R-90' },
+  D: { F: rubiksCube[5], U: rubiksCube[2], D: 'B180', L: 'L-90', R: 'R+90' },
+};
 
 // 입력받은 value를 getKey에 넣어주면, myCube에 value기준으로 큐브를 다시 세팅
-let currentKey = getKey('F');
+let currentKey = getKey('D');
 let myCube = changeMapValue(currentKey);
 
 // 상대값으로 위치를 다시 명명해주면?
@@ -313,7 +175,6 @@ let myCube = changeMapValue(currentKey);
 // 기준면을 기준으로 상하좌우만 생각하면 된다
 // 놓쳤던 점은 기준면을 바꿀 때, 관계된 면들이 회전하는 것
 /////////////////////////////////////////////////////////////////////////
-// 기준 - 상 - 하 - 좌  - 우 (순서)
 // F(standard) => U D L R
 // L => U: U -90 / D: D 90 / L: B / R: F
 // R => U: U 90 / D: D -90 / L: F / R: B
@@ -337,18 +198,18 @@ function rotateB(cube) {
 }
 
 function rotate(cube) {
-  let standard = cube.get('F');
-  rotateClockWise(standard);
-  function rotateClockWise(arr) {
-    let rotatedArr = getFace();
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < arr.length; j++) {
-        arr[i][j] = rotatedArr[j][i];
+  function rotate90(cube) {
+    // array 90도 회전시키기
+    // 정면 90도 회전
+    let standard = cube.get('F');
+    let newArr = JSON.parse(JSON.stringify(cube));
+    for (let i = 0; i < cube.length; i++) {
+      for (let j = 0; j < cube.length; j++) {
+        newArr[i][j] = cube[cube.length - j - 1][i];
       }
     }
-    return arr;
+    return newArr;
   }
-
   // 한쪽면 값 먼저 get
   function fix(right) {
     let fix = [right[0][0], right[1][0], right[2][0]];
@@ -397,151 +258,3 @@ function rotate(cube) {
   rightToDown(fixed, cubeDown);
   return rubiksCube;
 }
-
-// Q
-const quitBye = function () {
-  $inputBox.value = 'BYE~!';
-};
-
-// getInputValue
-const getInputValue = function () {
-  let inputValue = $inputBox.value;
-  let lastValue = valueCheck(inputValue);
-  console.log(lastValue);
-  return lastValue;
-};
-
-// (singleQuote 정리)
-// 공백제거
-// 문자열 유효한지 검사
-const valueCheck = function (value) {
-  let checkValue = true;
-  let valueArr = value.split('');
-  let upperValueArr = valueArr.map((e) => e.toUpperCase());
-  let noSpaceArr = delSpace(upperValueArr);
-  spaceCheck(noSpaceArr);
-  checkSingleQuote(noSpaceArr);
-  let noSingleQuoteArr = delSingleQuote(noSpaceArr);
-  stringCheck(noSingleQuoteArr);
-  if (checkValue) {
-    return noSingleQuoteArr;
-  } else if (!checkValue) {
-    return checkValue;
-  }
-
-  function delSpace(value) {
-    let noSpaceArr = [];
-    for (let i = 0; i < value.length; i++) {
-      if (value[i] !== ' ') {
-        noSpaceArr.push(value[i]);
-      }
-    }
-    return noSpaceArr;
-  }
-  function spaceCheck(value) {
-    if (value.length === 0) {
-      alert('값을 입력해주세요.(빈칸입니다.)');
-      $inputBox.focus();
-      checkValue = false;
-      return checkValue;
-    }
-  }
-  function checkSingleQuote(value) {
-    let count = 0;
-    for (let i = 0; i < value.length; i++) {
-      if (value[i] === "'" && value[i - 1] === "'") {
-        count++;
-      }
-    }
-    if (count !== 0) {
-      alert('잘못된 입력입니다.(sigleQuote연속)');
-      resetFocus();
-      checkValue = false;
-      return checkValue;
-    }
-    return value;
-  }
-  function delSingleQuote(value) {
-    let noSingleQuoteArr = [];
-    for (let i = 0; i < value.length; i++) {
-      if (value[i] === "'") {
-        noSingleQuoteArr.pop();
-        noSingleQuoteArr.push(value[i - 1] + value[i]);
-      } else {
-        noSingleQuoteArr.push(value[i]);
-      }
-    }
-    return noSingleQuoteArr;
-  }
-  function stringCheck(value) {
-    let count = 0;
-    for (let i = 0; i < value.length; i++) {
-      if (!commandSet.includes(value[i])) {
-        count++;
-      }
-    }
-    if (count !== 0) {
-      alert('알 수 없는 입력값이 있습니다.');
-      resetFocus();
-      checkValue = false;
-      return checkValue;
-    }
-  }
-};
-
-// movePart
-const findingMove = function () {
-  let command = getInputValue();
-  if (command === false) {
-    return;
-  }
-  for (let i = 0; i < command.length; i++) {
-    for (let j = 0; j < commandSet.length; j++) {
-      if (command[i] === commandSet[j]) {
-        // getCommandViewBox(command[i]);
-        // movingCube(command[i]);
-      }
-    }
-  }
-  resetFocus();
-};
-
-const movingCube = function (value) {
-  switch (value) {
-    case commandSet[0]:
-      upperLeft(newCube);
-      break;
-    case commandSet[1]:
-      upperRight(newCube);
-      break;
-    case commandSet[2]:
-      rightUp(newCube);
-      break;
-    case commandSet[3]:
-      rightDown(newCube);
-      break;
-    case commandSet[4]:
-      leftDown(newCube);
-      break;
-    case commandSet[5]:
-      leftUp(newCube);
-      break;
-    case commandSet[6]:
-      bottomRight(newCube);
-      break;
-    case commandSet[7]:
-      bottomLeft(newCube);
-      break;
-    case commandSet[8]:
-      quitBye();
-      break;
-    default:
-      break;
-  }
-};
-
-// reset
-const resetFocus = function () {
-  $inputBox.value = '';
-  $inputBox.focus();
-};
