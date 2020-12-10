@@ -1,6 +1,7 @@
-const colorSet = ['B', 'W', 'O', 'G', 'Y', 'R'];
+const colorList = ['B', 'W', 'O', 'G', 'Y', 'R'];
 const commandSet = ['F', "F'", 'R', "R'", 'U', "U'", 'B', "B'", 'L', "L'", 'D', "D'", 'Q'];
 const RUBIKS = 3;
+const FACES = 6;
 const MIDDLE = 4;
 const VIEW_CONTAINER = 'view_container';
 const LINE_CONTAINER = 'line_container';
@@ -13,26 +14,26 @@ const $inputBox = document.querySelector('body > div > div.input_container > inp
 let cubeCount = 0;
 
 // init
-let rubiksCube = getRubiksCube(colorSet);
+let rubiksCube = getRubiksCube();
 let cube = addCube();
 
 // rubiks cube
-function getRubiksCube(set) {
-  // plane cube
-  function getRubiks(color) {
-    let rubiks = [];
-    for (let i = 0; i < RUBIKS; i++) {
-      let temp = [];
-      for (let j = 0; j < RUBIKS; j++) {
-        temp.push(color);
-      }
-      rubiks.push(temp);
-    }
-    return rubiks;
-  }
+function getRubiksCube() {
+  let num = 0;
   let rubiksCube = [];
-  for (let i = 0; i < set.length; i++) {
-    rubiksCube.push(getRubiks(set[i]));
+  for (let k = 0; k < FACES; k++) {
+    let face = [
+      [0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0],
+    ];
+    for (let i = 0; i < RUBIKS; i++) {
+      for (let j = 0; j < RUBIKS; j++) {
+        face[i][j] = num;
+        num++;
+      }
+    }
+    rubiksCube.push(face);
   }
   return rubiksCube;
 }
@@ -40,17 +41,16 @@ function getRubiksCube(set) {
 // add cube
 function addCube() {
   // input cube value
-  function inputCubeValue(cube, containerBox) {
-    let cubeArray = getCubeArray(cube);
-    for (let i = 0; i < containerBox.length; i++) {
-      containerBox[i].innerText = cubeArray[i];
+  function inputCubeValue(cube, pieceOfCube) {
+    for (let i = 0; i < pieceOfCube.length; i++) {
+      pieceOfCube[i].innerText = 0;
     }
   }
   // input cube color
   function getColor(containerBox) {
-    const colorSet = { B: 'purple', W: 'darkgray', O: 'orange', G: 'green', Y: 'yellowgreen', R: 'red' };
+    const colorList = { B: 'purple', W: 'darkgray', O: 'orange', G: 'green', Y: 'yellowgreen', R: 'red' };
     for (let i = 0; i < containerBox.length; i++) {
-      containerBox[i].style.background = colorSet[colorBox[i].innerText];
+      containerBox[i].style.background = colorList[colorBox[i].innerText];
     }
   }
   let bigBox = createBox($outputBox, VIEW_CONTAINER);
@@ -155,24 +155,29 @@ cmdMap.set('m');
 cmdMap.set('q');
 cmdMap.set('s');
 
-function rotatePlane(arr) {
-  function planeSample() {
-    let num = 1;
-    let test = [];
-    for (let i = 0; i < 3; i++) {
-      let temp = [];
-      for (let j = 0; j < 3; j++) {
-        temp.push(num);
-        num++;
-      }
-      test.push(temp);
-    }
-    return test;
-  }
-  let rotatedArr = planeSample();
+function rotate90(arr) {
+  let rotatedArr = getFace();
   for (let i = 0; i < arr.length; i++) {
     for (let j = 0; j < arr.length; j++) {
-      arr[i][j] = rotatedArr[j][i];
+      arr[i][j] = rotatedArr[arr.length - j - 1][i];
+    }
+  }
+  return arr;
+}
+function rotate270(arr) {
+  let rotatedArr = getFace();
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr.length; j++) {
+      arr[i][j] = rotatedArr[j][arr.length - i - 1];
+    }
+  }
+  return arr;
+}
+function rotate180(arr) {
+  let rotatedArr = getFace();
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr.length; j++) {
+      arr[i][j] = rotatedArr[arr.length - i - 1][arr.length - j - 1];
     }
   }
   return arr;
@@ -189,7 +194,7 @@ function changeMapValue(key) {
 }
 
 // 입력받은 value를 getKey에 넣어주면, myCube에 value기준으로 큐브를 다시 세팅
-let currentKey = getKey('D');
+let currentKey = getKey('F');
 let myCube = changeMapValue(currentKey);
 
 // 상대값으로 위치를 다시 명명해주면?
@@ -209,6 +214,7 @@ let myCube = changeMapValue(currentKey);
 // 기준면을 기준으로 상하좌우만 생각하면 된다
 // 놓쳤던 점은 기준면을 바꿀 때, 관계된 면들이 회전하는 것
 /////////////////////////////////////////////////////////////////////////
+// 기준 - 상 - 하 - 좌  - 우 (순서)
 // F(standard) => U D L R
 // L => U: U -90 / D: D 90 / L: B / R: F
 // R => U: U 90 / D: D -90 / L: F / R: B
@@ -235,18 +241,7 @@ function rotate(cube) {
   let standard = cube.get('F');
   rotateClockWise(standard);
   function rotateClockWise(arr) {
-    function planeSample() {
-      let test = [];
-      for (let i = 0; i < 3; i++) {
-        let temp = [];
-        for (let j = 0; j < 3; j++) {
-          temp.push(0);
-        }
-        test.push(temp);
-      }
-      return test;
-    }
-    let rotatedArr = planeSample();
+    let rotatedArr = getFace();
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < arr.length; j++) {
         arr[i][j] = rotatedArr[j][i];
