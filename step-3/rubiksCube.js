@@ -158,46 +158,55 @@ function rotateFaces(cube, degree) {
   return newArr;
 }
 
-let mykeyMap = {
-  F: { F: rubiksCube[2], U: rubiksCube[0], D: rubiksCube[5], L: rubiksCube[1], R: rubiksCube[3] },
-  L: {
-    F: rubiksCube[1],
-    U: rotateFaces(rubiksCube[0], 270),
-    D: rotateFaces(rubiksCube[5], 90),
-    L: rubiksCube[4],
-    R: rubiksCube[2],
-  },
-  R: {
-    F: rubiksCube[3],
-    U: rotateFaces(rubiksCube[0], 90),
-    D: rotateFaces(rubiksCube[5], 270),
-    L: rubiksCube[2],
-    R: rubiksCube[4],
-  },
-  B: {
-    F: rubiksCube[4],
-    U: rotateFaces(rubiksCube[0], 180),
-    D: rotateFaces(rubiksCube[5], 180),
-    L: rubiksCube[3],
-    R: rubiksCube[1],
-  },
-  U: {
-    F: rubiksCube[0],
-    U: rotateFaces(rubiksCube[3], 180),
-    D: rubiksCube[2],
-    L: rotateFaces(rubiksCube[1], 90),
-    R: rotateFaces(rubiksCube[3], 270),
-  },
-  D: {
-    F: rubiksCube[5],
-    U: rubiksCube[2],
-    D: rotateFaces(rubiksCube[4], 180),
-    L: rotateFaces(rubiksCube[1], 270),
-    R: rotateFaces(rubiksCube[3], 90),
-  },
-};
-
-let currentKey = mykeyMap.L;
+function getCurrnetCube(cube) {
+  let mykeyMap = {
+    F: {
+      F: cube[2],
+      U: cube[0],
+      D: cube[5],
+      L: cube[1],
+      R: cube[3],
+    },
+    L: {
+      F: cube[1],
+      U: rotateFaces(cube[0], 270),
+      D: rotateFaces(cube[5], 90),
+      L: cube[4],
+      R: cube[2],
+    },
+    R: {
+      F: cube[3],
+      U: rotateFaces(cube[0], 90),
+      D: rotateFaces(cube[5], 270),
+      L: cube[2],
+      R: cube[4],
+    },
+    B: {
+      F: cube[4],
+      U: rotateFaces(cube[0], 180),
+      D: rotateFaces(cube[5], 180),
+      L: cube[3],
+      R: cube[1],
+    },
+    U: {
+      F: cube[0],
+      U: rotateFaces(cube[3], 180),
+      D: cube[2],
+      L: rotateFaces(cube[1], 90),
+      R: rotateFaces(cube[3], 270),
+    },
+    D: {
+      F: cube[5],
+      U: cube[2],
+      D: rotateFaces(cube[4], 180),
+      L: rotateFaces(cube[1], 270),
+      R: rotateFaces(cube[3], 90),
+    },
+  };
+  return mykeyMap;
+}
+let currentCube = getCurrnetCube(rubiksCube);
+let currentKey = currentCube.L;
 
 // rotate right
 function rotateA(key) {
@@ -214,6 +223,15 @@ function rotateB(key) {
 }
 
 function rotate(key) {
+  // operating
+  let fixed = fix(key.R);
+  // 기준면 회전
+  rotateFaces(key.F, 90);
+  upToRight(key.U, key.R);
+  leftToUp(key.L, key.U);
+  downToLeft(key.D, key.L);
+  rightToDown(fixed, key.D);
+
   // 한쪽면 값 먼저 get
   function fix(R) {
     let fix = [R[0][0], R[1][0], R[2][0]];
@@ -248,13 +266,5 @@ function rotate(key) {
     D[0][2] = fix[2];
     return fix;
   }
-  // operating
-  let fixed = fix(key.R);
-  // 기준면 회전
-  rotateFaces(key.F, 90);
-  upToRight(key.U, key.R);
-  leftToUp(key.L, key.U);
-  downToLeft(key.D, key.L);
-  rightToDown(fixed, key.D);
   return key;
 }
