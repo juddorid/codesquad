@@ -197,7 +197,7 @@ let mykeyMap = {
   },
 };
 
-let currentKey = mykeyMap.D;
+let currentKey = mykeyMap.L;
 
 // rotate right
 function rotateA(key) {
@@ -214,53 +214,47 @@ function rotateB(key) {
 }
 
 function rotate(key) {
-  // 기준면 회전
-  rotateFaces(key, 90);
   // 한쪽면 값 먼저 get
-  function fix(right) {
-    let fix = [right[0][0], right[1][0], right[2][0]];
+  function fix(R) {
+    let fix = [R[0][0], R[1][0], R[2][0]];
     return fix;
   }
   // 기준면의 주변면의 회전 루틴
   // T_bottom => R_elft => B_top => L_right => T_bottom
-  function upToRight(up, right) {
-    right[0][0] = up[2][0];
-    right[1][0] = up[2][1];
-    right[2][0] = up[2][2];
-    return right;
+  function upToRight(U, R) {
+    R[0][0] = U[2][0];
+    R[1][0] = U[2][1];
+    R[2][0] = U[2][2];
+    return R;
   }
 
-  function leftToUp(left, up) {
-    up[2][0] = left[2][2];
-    up[2][1] = left[1][2];
-    up[2][2] = left[0][2];
-    return up;
+  function leftToUp(L, U) {
+    U[2][0] = L[2][2];
+    U[2][1] = L[1][2];
+    U[2][2] = L[0][2];
+    return U;
   }
 
-  function downToLeft(down, left) {
-    left[0][2] = down[0][0];
-    left[1][2] = down[0][1];
-    left[2][2] = down[0][2];
-    return left;
+  function downToLeft(D, L) {
+    L[0][2] = D[0][0];
+    L[1][2] = D[0][1];
+    L[2][2] = D[0][2];
+    return L;
   }
 
-  function rightToDown(fix, down) {
-    down[0][0] = fix[0];
-    down[0][1] = fix[1];
-    down[0][2] = fix[2];
+  function rightToDown(fix, D) {
+    D[0][0] = fix[0];
+    D[0][1] = fix[1];
+    D[0][2] = fix[2];
     return fix;
   }
-  let cubeUp = cube.get('U');
-  let cubeRight = cube.get('R');
-  let cubeLeft = cube.get('L');
-  let cubeDown = cube.get('D');
-
   // operating
-  let fixed = fix(cubeRight);
-  rotateClockWise(cube);
-  upToRight(cubeUp, cubeRight);
-  leftToUp(cubeLeft, cubeUp);
-  downToLeft(cubeDown, cubeLeft);
-  rightToDown(fixed, cubeDown);
-  return rubiksCube;
+  let fixed = fix(key.R);
+  // 기준면 회전
+  rotateFaces(key.F, 90);
+  upToRight(key.U, key.R);
+  leftToUp(key.L, key.U);
+  downToLeft(key.D, key.L);
+  rightToDown(fixed, key.D);
+  return key;
 }
