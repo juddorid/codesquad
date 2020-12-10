@@ -211,8 +211,63 @@ function getCurrnetCube(cube) {
   };
   return mykeyMap;
 }
+
+function decryption(cube) {
+  let myDecryption = {
+    F: {
+      F: cube[2],
+      U: cube[0],
+      D: cube[5],
+      L: cube[1],
+      R: cube[3],
+      B: cube[4],
+    },
+    L: {
+      F: cube[3],
+      U: rotateFaces(cube[0], 90),
+      D: rotateFaces(cube[5], 270),
+      L: cube[2],
+      R: cube[4],
+      B: cube[1],
+    },
+    R: {
+      F: cube[1],
+      U: rotateFaces(cube[0], 270),
+      D: rotateFaces(cube[5], 90),
+      L: cube[4],
+      R: cube[2],
+      B: cube[3],
+    },
+    B: {
+      F: cube[4],
+      U: rotateFaces(cube[0], 180),
+      D: rotateFaces(cube[5], 180),
+      L: cube[3],
+      R: cube[1],
+      B: cube[2],
+    },
+    U: {
+      F: cube[5],
+      U: cube[2],
+      D: cube[4],
+      L: rotateFaces(cube[1], 270),
+      R: rotateFaces(cube[3], 90),
+      B: rotateFaces(cube[0], 180),
+    },
+    D: {
+      F: cube[0],
+      U: cube[4],
+      D: cube[2],
+      L: rotateFaces(cube[1], 90),
+      R: rotateFaces(cube[3], 270),
+      B: rotateFaces(cube[5], 180),
+    },
+  };
+  return myDecryption;
+}
+
 let currentCube = getCurrnetCube(rubiksCube);
-let currentKey = currentCube.D;
+let currentKey = currentCube.B;
 
 // rotate right
 function rotateA(cube, key) {
@@ -237,6 +292,15 @@ function rotate(cube, key) {
   leftToUp(key.L, key.U);
   downToLeft(key.D, key.L);
   rightToDown(fixed, key.D);
+  let rotateCube = getNewCube(cube, key);
+  let decryptionCube = decryption(rotateCube);
+  let myRubiks = decryptionCube.B;
+  cube[0] = myRubiks.U;
+  cube[1] = myRubiks.L;
+  cube[2] = myRubiks.F;
+  cube[3] = myRubiks.R;
+  cube[4] = myRubiks.B;
+  cube[5] = myRubiks.D;
 
   // 한쪽면 값 먼저 get
   function fix(R) {
@@ -273,29 +337,16 @@ function rotate(cube, key) {
     return fix;
   }
   function getNewCube(cube, key) {
-    // function checkCenterValue(cube, key) {
-    //   let defaultFaceValues = [key.F[1][1], key.U[1][1], key.D[1][1], key.L[1][1], key.R[1][1], key.B[1][1]];
-    //   let currentFaces = [key.F, key.U, key.D, key.L, key.R, key.B];
-    //   for (let i = 0; i < cube.length; i++) {
-    //     for (let j = 0; j < defaultFaceValues.length; j++) {
-    //       if (cube[i][1][1] === defaultFaceValues[j]) {
-    //         cube[i] = currentFaces[j];
-    //       }
-    //     }
-    //   }
-    //   return cube;
-    // }
-    // let newCube = checkCenterValue(cube, key);
-    // return newCube;
     cube[0] = key.U;
     cube[1] = key.L;
     cube[2] = key.F;
     cube[3] = key.R;
     cube[4] = key.B;
     cube[5] = key.D;
+    return cube;
   }
-  let myCurrentCube = getNewCube(cube, key);
-  return myCurrentCube;
+
+  return cube;
 }
 
 // Q
