@@ -11,7 +11,83 @@ const $outputBox = document.querySelector('#output_box');
 const $inputButton = document.querySelector('#input_btn');
 const $inputBox = document.querySelector('body > div > div.input_container > input.input_box');
 
+let a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+let b = [];
+
+for (let i = 0; i < a.length; i++) {
+  let c = [];
+  for (let j = 0; j < 2; j++) {
+    c.push(a[j]);
+  }
+  b.push(c);
+}
+
 let cubeCount = 0;
+// const newCube = [
+//   [
+//     [0, 1, 2],
+//     [3, 4, 5],
+//     [6, 7, 8],
+//   ],
+//   [
+//     [
+//       [9, 10, 11],
+//       [12, 13, 14],
+//       [15, 16, 17],
+//     ],
+//     [
+//       [18, 19, 20],
+//       [21, 22, 23],
+//       [24, 25, 26],
+//     ],
+//     [
+//       [27, 28, 29],
+//       [30, 31, 32],
+//       [33, 34, 35],
+//     ],
+//     [
+//       [36, 37, 38],
+//       [39, 40, 41],
+//       [42, 43, 44],
+//     ],
+//   ],
+//   [
+//     [45, 46, 47],
+//     [48, 49, 50],
+//     [51, 52, 53],
+//   ],
+// ];
+
+let rubiksUp = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+];
+let rubiksLeft = [
+  [9, 10, 11],
+  [12, 13, 14],
+  [15, 16, 17],
+];
+let rubiksFront = [
+  [18, 19, 20],
+  [21, 22, 23],
+  [24, 25, 26],
+];
+let rubiksRight = [
+  [27, 28, 29],
+  [30, 31, 32],
+  [33, 34, 35],
+];
+let rubiksBack = [
+  [36, 37, 38],
+  [39, 40, 41],
+  [42, 43, 44],
+];
+let rubiksDown = [
+  [45, 46, 47],
+  [48, 49, 50],
+  [51, 52, 53],
+];
 
 // init
 let rubiksCube = getRubiksCube();
@@ -19,7 +95,7 @@ let cube = addCube();
 
 // rubiks cube
 function getRubiksCube() {
-  let num = 0;
+  let num = 1;
   let rubiksCube = [];
   for (let k = 0; k < FACES; k++) {
     let face = [
@@ -37,15 +113,21 @@ function getRubiksCube() {
   }
   return rubiksCube;
 }
+const cubeFaces = ['U', 'L', 'F', 'R', 'B', 'D'];
+function getCubeMap() {
+  let myCubeMap = new Map();
+  for (let i = 0; i < FACES; i++) {
+    myCubeMap.set(cubeFaces[i], rubiksCube[i]);
+  }
+  return myCubeMap;
+}
+
+let myCubeMap = getCubeMap();
 
 // add cube
 function addCube() {
   // input cube value
-  function inputCubeValue(cube, pieceOfCube) {
-    for (let i = 0; i < pieceOfCube.length; i++) {
-      pieceOfCube[i].innerText = 0;
-    }
-  }
+  function inputCubeValue(cube, pieceOfCube) {}
   // input cube color
   function getColor(containerBox) {
     const colorList = { B: 'purple', W: 'darkgray', O: 'orange', G: 'green', Y: 'yellowgreen', R: 'red' };
@@ -56,7 +138,7 @@ function addCube() {
   let bigBox = createBox($outputBox, VIEW_CONTAINER);
   let cube = drawCube(bigBox, LINE_CONTAINER);
   let colorBox = cube.getElementsByClassName(COLORBOX);
-  inputCubeValue(rubiksCube, colorBox);
+  inputCubeValue(newCube, colorBox);
   getColor(colorBox);
   return cube;
 }
@@ -155,14 +237,31 @@ cmdMap.set('m');
 cmdMap.set('q');
 cmdMap.set('s');
 
+function copyArr() {
+  let count = 0;
+  let rowCount = 3;
+
+  let result = [];
+
+  for (let i = 0; i < rowCount; i++) {
+    let row = [];
+    for (let j = 0; j < rowCount; j++) {
+      row.push(count);
+      count++;
+    }
+    result.push(row);
+  }
+  return result;
+}
+
 function rotate90(arr) {
-  let rotatedArr = getFace();
+  let newArr = JSON.parse(JSON.stringify(arr));
   for (let i = 0; i < arr.length; i++) {
     for (let j = 0; j < arr.length; j++) {
-      arr[i][j] = rotatedArr[arr.length - j - 1][i];
+      newArr[i][j] = arr[arr.length - j - 1][i];
     }
   }
-  return arr;
+  return newArr;
 }
 function rotate270(arr) {
   let rotatedArr = getFace();
