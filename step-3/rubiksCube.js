@@ -115,101 +115,107 @@ function getCubeArray(cube) {
   return cubeArray;
 }
 
-// let key = 'FLRDUB';
-// let keyArr = key.split('');
-
-function getKey(value) {
-  let mykeyMap = {
-    F: { F: 'F', U: 'U', D: 'D', L: 'L', R: 'R' },
-    L: { F: 'L', U: 'U-90', D: 'D+90', L: 'B', R: 'F' },
-    R: { F: 'R', U: 'U+90', D: 'D-90', L: 'F', R: 'B' },
-    B: { F: 'B', U: 'U180', D: 'D180', L: 'R', R: 'L' },
-    U: { F: 'U', U: 'B180', D: 'F', L: 'L+90', R: 'R-90' },
-    D: { F: 'D', U: 'F', D: 'B180', L: 'L-90', R: 'R+90' },
-  };
-
-  key = mykeyMap.get(value);
-  keyArr = key.split('');
-  return keyArr;
-}
-
-// 회전된 배열 필요
-
-function rotate90(cube) {
-  let newArr = JSON.parse(JSON.stringify(cube));
-  for (let i = 0; i < cube.length; i++) {
-    for (let j = 0; j < cube.length; j++) {
-      newArr[i][j] = cube[cube.length - j - 1][i];
+// 회전된 배열
+function rotateFaces(cube, degree) {
+  function rotate90(cube) {
+    let newArr = JSON.parse(JSON.stringify(cube));
+    let cubeLength = cube.length;
+    for (let i = 0; i < cubeLength; i++) {
+      for (let j = 0; j < cubeLength; j++) {
+        newArr[i][j] = cube[cubeLength - j - 1][i];
+      }
     }
+    return newArr;
+  }
+  function rotate180(cube) {
+    let newArr = JSON.parse(JSON.stringify(cube));
+    let cubeLength = cube.length;
+    for (let i = 0; i < cubeLength; i++) {
+      for (let j = 0; j < cubeLength; j++) {
+        newArr[i][j] = cube[cubeLength - i - 1][cubeLength - j - 1];
+      }
+    }
+    return newArr;
+  }
+  function rotate270(cube) {
+    let newArr = JSON.parse(JSON.stringify(cube));
+    let cubeLength = cube.length;
+    for (let i = 0; i < cubeLength; i++) {
+      for (let j = 0; j < cubeLength; j++) {
+        newArr[i][j] = cube[j][cubeLength - i - 1];
+      }
+    }
+    return newArr;
+  }
+  let newArr = [];
+  if (degree === 90) {
+    newArr = rotate90(cube);
+  } else if (degree === 180) {
+    newArr = rotate180(cube);
+  } else if (degree === 270) {
+    newArr = rotate270(cube);
   }
   return newArr;
 }
 
 let mykeyMap = {
   F: { F: rubiksCube[2], U: rubiksCube[0], D: rubiksCube[5], L: rubiksCube[1], R: rubiksCube[3] },
-  L: { F: rubiksCube[1], U: 'U-90', D: 'D+90', L: rubiksCube[4], R: rubiksCube[2] },
-  R: { F: rubiksCube[3], U: 'U+90', D: 'D-90', L: rubiksCube[2], R: rubiksCube[4] },
-  B: { F: rubiksCube[4], U: 'U180', D: 'D180', L: rubiksCube[3], R: rubiksCube[1] },
-  U: { F: rubiksCube[0], U: 'B180', D: rubiksCube[2], L: 'L+90', R: 'R-90' },
-  D: { F: rubiksCube[5], U: rubiksCube[2], D: 'B180', L: 'L-90', R: 'R+90' },
+  L: {
+    F: rubiksCube[1],
+    U: rotateFaces(rubiksCube[0], 270),
+    D: rotateFaces(rubiksCube[5], 90),
+    L: rubiksCube[4],
+    R: rubiksCube[2],
+  },
+  R: {
+    F: rubiksCube[3],
+    U: rotateFaces(rubiksCube[0], 90),
+    D: rotateFaces(rubiksCube[5], 270),
+    L: rubiksCube[2],
+    R: rubiksCube[4],
+  },
+  B: {
+    F: rubiksCube[4],
+    U: rotateFaces(rubiksCube[0], 180),
+    D: rotateFaces(rubiksCube[5], 180),
+    L: rubiksCube[3],
+    R: rubiksCube[1],
+  },
+  U: {
+    F: rubiksCube[0],
+    U: rotateFaces(rubiksCube[3], 180),
+    D: rubiksCube[2],
+    L: rotateFaces(rubiksCube[1], 90),
+    R: rotateFaces(rubiksCube[3], 270),
+  },
+  D: {
+    F: rubiksCube[5],
+    U: rubiksCube[2],
+    D: rotateFaces(rubiksCube[4], 180),
+    L: rotateFaces(rubiksCube[1], 270),
+    R: rotateFaces(rubiksCube[3], 90),
+  },
 };
 
-// 입력받은 value를 getKey에 넣어주면, myCube에 value기준으로 큐브를 다시 세팅
-let currentKey = getKey('D');
-let myCube = changeMapValue(currentKey);
-
-// 상대값으로 위치를 다시 명명해주면?
-// 처음에는 F가 F인데, R을 돌려! 하면 R이 F인거야
-// 그러면 R을 F라고 하고, 각자가 위치를 다시 생각한다
-// 명령에 따라 큐브의 정면이 바뀐다
-// 큐브 자체가 돌아가는 설정
-// F: fornt // L: left // R: right // D: down // U: up // B: back
-
-// 기준면을 바꾸면 큐브를 돌리는 것과 같다
-// 기준면을 바꾸려면 기준면이 바뀌는 것에 따라 모든 면을 회전시켜줘야 한다
-// 옆으로 돌리면 위, 아래가 돌아간다
-// 단순히 면을 바꿔주는게 아니라.. 밀어내기를 하는게 맞을 수도 있을 것 같다
-
-// 다시 정리하자면,
-// 반대쪽면은 제외할 수 있다
-// 기준면을 기준으로 상하좌우만 생각하면 된다
-// 놓쳤던 점은 기준면을 바꿀 때, 관계된 면들이 회전하는 것
-/////////////////////////////////////////////////////////////////////////
-// F(standard) => U D L R
-// L => U: U -90 / D: D 90 / L: B / R: F
-// R => U: U 90 / D: D -90 / L: F / R: B
-// B => U: U 180 / D: D 180 / L: R / R: L
-// U => U: B 180 / D: F / L: L 90 / R: R -90
-// D => U: F / D: B 180 / L: L -90 / R: R 90
-/////////////////////////////////////////////////////////////////////////
+let currentKey = mykeyMap.D;
 
 // rotate right
-function rotateA(cube) {
-  rotate(cube);
+function rotateA(key) {
+  rotate(key);
   addCube();
 }
 
 // rotate left
-function rotateB(cube) {
-  rotate(cube);
-  rotate(cube);
-  rotate(cube);
+function rotateB(key) {
+  rotate(key);
+  rotate(key);
+  rotate(key);
   addCube();
 }
 
-function rotate(cube) {
-  function rotate90(cube) {
-    // array 90도 회전시키기
-    // 정면 90도 회전
-    let standard = cube.get('F');
-    let newArr = JSON.parse(JSON.stringify(cube));
-    for (let i = 0; i < cube.length; i++) {
-      for (let j = 0; j < cube.length; j++) {
-        newArr[i][j] = cube[cube.length - j - 1][i];
-      }
-    }
-    return newArr;
-  }
+function rotate(key) {
+  // 기준면 회전
+  rotateFaces(key, 90);
   // 한쪽면 값 먼저 get
   function fix(right) {
     let fix = [right[0][0], right[1][0], right[2][0]];
