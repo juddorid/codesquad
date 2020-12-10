@@ -14,7 +14,7 @@ let cubeCount = 0;
 
 // init
 let rubiksCube = getRubiksCube(colorList);
-let cube = addCube(rubiksCube);
+let cube = addCube();
 
 // rubiks cube
 function getRubiksCube(list) {
@@ -38,10 +38,10 @@ function getRubiksCube(list) {
 }
 
 // add cube
-function addCube(crrCube) {
+function addCube() {
   // input cube value
-  function inputCubeValue(crrCube, containerBox) {
-    let cubeArray = getCubeArray(crrCube);
+  function inputCubeValue(cube, containerBox) {
+    let cubeArray = getCubeArray(cube);
     for (let i = 0; i < containerBox.length; i++) {
       containerBox[i].innerText = cubeArray[i];
     }
@@ -56,7 +56,7 @@ function addCube(crrCube) {
   let bigBox = createBox($outputBox, VIEW_CONTAINER);
   let cube = drawCube(bigBox, LINE_CONTAINER);
   let colorBox = cube.getElementsByClassName(COLORBOX);
-  inputCubeValue(crrCube, colorBox);
+  inputCubeValue(rubiksCube, colorBox);
   getColor(colorBox);
   return cube;
 }
@@ -166,6 +166,7 @@ function getCurrnetCube(cube) {
       D: cube[5],
       L: cube[1],
       R: cube[3],
+      B: cube[4],
     },
     L: {
       F: cube[1],
@@ -173,6 +174,7 @@ function getCurrnetCube(cube) {
       D: rotateFaces(cube[5], 90),
       L: cube[4],
       R: cube[2],
+      B: cube[3],
     },
     R: {
       F: cube[3],
@@ -180,6 +182,7 @@ function getCurrnetCube(cube) {
       D: rotateFaces(cube[5], 270),
       L: cube[2],
       R: cube[4],
+      B: cube[1],
     },
     B: {
       F: cube[4],
@@ -187,13 +190,15 @@ function getCurrnetCube(cube) {
       D: rotateFaces(cube[5], 180),
       L: cube[3],
       R: cube[1],
+      B: cube[2],
     },
     U: {
       F: cube[0],
-      U: rotateFaces(cube[3], 180),
+      U: rotateFaces(cube[4], 180),
       D: cube[2],
       L: rotateFaces(cube[1], 90),
       R: rotateFaces(cube[3], 270),
+      B: cube[5],
     },
     D: {
       F: cube[5],
@@ -201,6 +206,7 @@ function getCurrnetCube(cube) {
       D: rotateFaces(cube[4], 180),
       L: rotateFaces(cube[1], 270),
       R: rotateFaces(cube[3], 90),
+      B: cube[0],
     },
   };
   return mykeyMap;
@@ -209,30 +215,20 @@ let currentCube = getCurrnetCube(rubiksCube);
 let currentKey = currentCube.L;
 
 // rotate right
-function rotateA(key) {
-  rotate(key);
-  let newCube = getNewCube(rubiksCube, currentKey);
-  let myCube = addCube(newCube);
-  function getNewCube(cube, key) {
-    cube[0] = key.U;
-    cube[1] = key.L;
-    cube[2] = key.F;
-    cube[3] = key.R;
-    cube[5] = key.D;
-    return cube;
-  }
-  return myCube;
-}
-
-// rotate left
-function rotateB(key) {
-  rotate(key);
-  rotate(key);
-  rotate(key);
+function rotateA(cube, key) {
+  rotate(cube, key);
   addCube();
 }
 
-function rotate(key) {
+// rotate left
+function rotateB(cube, key) {
+  rotate(cube, key);
+  rotate(cube, key);
+  rotate(cube, key);
+  addCube();
+}
+
+function rotate(cube, key) {
   // operating
   let fixed = fix(key.R);
   // 기준면 회전
@@ -276,5 +272,17 @@ function rotate(key) {
     D[0][2] = fix[2];
     return fix;
   }
-  return key;
+  function getNewCube(cube, key) {
+    cube[0] = key.U;
+    cube[1] = key.L;
+    cube[2] = key.F;
+    cube[3] = key.R;
+    cube[4] = key.B;
+    cube[5] = key.D;
+    return cube;
+  }
+
+  let newCube = getNewCube(cube, key);
+
+  return newCube;
 }
