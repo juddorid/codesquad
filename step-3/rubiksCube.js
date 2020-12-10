@@ -1,5 +1,5 @@
 const colorList = ['B', 'W', 'O', 'G', 'Y', 'R'];
-const commandSet = ['F', "F'", 'R', "R'", 'U', "U'", 'B', "B'", 'L', "L'", 'D', "D'", 'Q'];
+const cmdList = ['F', "F'", 'R', "R'", 'U', "U'", 'B', "B'", 'L', "L'", 'D', "D'", 'Q'];
 const RUBIKS = 3;
 const MIDDLE = 4;
 const VIEW_CONTAINER = 'view_container';
@@ -267,23 +267,22 @@ function decryption(cube) {
 }
 
 let currentCube = getCurrnetCube(rubiksCube);
-let currentKey = currentCube.B;
 
 // rotate right
-function rotateA(cube, key) {
-  rotate(cube, key);
+function rotateA(cube, key, value) {
+  rotate(cube, key, value);
   addCube();
 }
 
 // rotate left
-function rotateB(cube, key) {
-  rotate(cube, key);
-  rotate(cube, key);
-  rotate(cube, key);
+function rotateB(cube, key, value) {
+  rotate(cube, key, value);
+  rotate(cube, key, value);
+  rotate(cube, key, value);
   addCube();
 }
 
-function rotate(cube, key) {
+function rotate(cube, key, value) {
   // operating
   let fixed = fix(key.R);
   // 기준면 회전
@@ -294,7 +293,7 @@ function rotate(cube, key) {
   rightToDown(fixed, key.D);
   let rotateCube = getNewCube(cube, key);
   let decryptionCube = decryption(rotateCube);
-  let myRubiks = decryptionCube.B;
+  let myRubiks = decryptionCube[value];
   cube[0] = myRubiks.U;
   cube[1] = myRubiks.L;
   cube[2] = myRubiks.F;
@@ -358,6 +357,7 @@ const quitBye = function () {
 const getInputValue = function () {
   let inputValue = $inputBox.value;
   let lastValue = valueCheck(inputValue);
+  console.log(lastValue);
   return lastValue;
 };
 
@@ -427,12 +427,12 @@ const valueCheck = function (value) {
   function stringCheck(value) {
     let count = 0;
     for (let i = 0; i < value.length; i++) {
-      if (!stringSet.includes(value[i])) {
+      if (!cmdList.includes(value[i])) {
         count++;
       }
     }
     if (count !== 0) {
-      alert("알 수 없는 입력값이 있습니다.\n(유효한 입력값: U, U', R, R', L, L', B, B', Q)");
+      alert('알 수 없는 입력값이 있습니다.');
       resetFocus();
       checkValue = false;
       return checkValue;
@@ -447,43 +447,67 @@ const findingMove = function () {
     return;
   }
   for (let i = 0; i < command.length; i++) {
-    for (let j = 0; j < stringSet.length; j++) {
-      if (command[i] === stringSet[j]) {
-        getCommandViewBox(command[i]);
+    for (let j = 0; j < cmdList.length; j++) {
+      if (command[i] === cmdList[j]) {
+        // getCommandViewBox(command[i]);
         movingCube(command[i]);
       }
     }
   }
   resetFocus();
 };
-
+let currentkey;
 const movingCube = function (value) {
   switch (value) {
-    case stringSet[0]:
-      upperLeft(newCube);
+    case cmdList[0]:
+      currentKey = currentCube[value];
+      rotateA(rubiksCube, currentKey, value);
       break;
-    case stringSet[1]:
-      upperRight(newCube);
+    case cmdList[1]:
+      currentKey = currentCube[value];
+      rotateB(rubiksCube, currentKey, value);
       break;
-    case stringSet[2]:
-      rightUp(newCube);
+    case cmdList[2]:
+      currentKey = currentCube[value];
+      rotateA(rubiksCube, currentKey, value);
       break;
-    case stringSet[3]:
-      rightDown(newCube);
+    case cmdList[3]:
+      currentKey = currentCube[value];
+      rotateB(rubiksCube, currentKey, value);
       break;
-    case stringSet[4]:
-      leftDown(newCube);
+    case cmdList[4]:
+      currentKey = currentCube[value];
+      rotateA(rubiksCube, currentKey, value);
       break;
-    case stringSet[5]:
-      leftUp(newCube);
+    case cmdList[5]:
+      currentKey = currentCube[value];
+      rotateB(rubiksCube, currentKey, value);
       break;
-    case stringSet[6]:
-      bottomRight(newCube);
+    case cmdList[6]:
+      currentKey = currentCube[value];
+      rotateA(rubiksCube, currentKey, value);
       break;
-    case stringSet[7]:
-      bottomLeft(newCube);
+    case cmdList[7]:
+      currentKey = currentCube[value];
+      rotateB(rubiksCube, currentKey, value);
       break;
-    case stringSet[8]:
+    case cmdList[8]:
+      currentKey = currentCube[value];
+      rotateA(rubiksCube, currentKey, value);
+      break;
+    case cmdList[9]:
+      currentKey = currentCube[value];
+      rotateB(rubiksCube, currentKey, value);
+      break;
+    case cmdList[10]:
+      currentKey = currentCube[value];
+      rotateA(rubiksCube, currentKey, value);
+      break;
+    case cmdList[11]:
+      currentKey = currentCube[value];
+      rotateB(rubiksCube, currentKey, value);
+      break;
+    case cmdList[12]:
       quitBye();
       break;
     default:
