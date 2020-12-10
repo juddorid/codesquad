@@ -1,4 +1,4 @@
-const colorSet = ['B', 'W', 'O', 'G', 'Y', 'R'];
+const colorList = ['B', 'W', 'O', 'G', 'Y', 'R'];
 const commandSet = ['F', "F'", 'R', "R'", 'U', "U'", 'B', "B'", 'L', "L'", 'D', "D'", 'Q'];
 const RUBIKS = 3;
 const MIDDLE = 4;
@@ -13,11 +13,11 @@ const $inputBox = document.querySelector('body > div > div.input_container > inp
 let cubeCount = 0;
 
 // init
-let rubiksCube = getRubiksCube(colorSet);
-let cube = addCube();
+let rubiksCube = getRubiksCube(colorList);
+let cube = addCube(rubiksCube);
 
 // rubiks cube
-function getRubiksCube(set) {
+function getRubiksCube(list) {
   // plane cube
   function getRubiks(color) {
     let rubiks = [];
@@ -31,17 +31,17 @@ function getRubiksCube(set) {
     return rubiks;
   }
   let rubiksCube = [];
-  for (let i = 0; i < set.length; i++) {
-    rubiksCube.push(getRubiks(set[i]));
+  for (let i = 0; i < list.length; i++) {
+    rubiksCube.push(getRubiks(list[i]));
   }
   return rubiksCube;
 }
 
 // add cube
-function addCube() {
+function addCube(crrCube) {
   // input cube value
-  function inputCubeValue(cube, containerBox) {
-    let cubeArray = getCubeArray(cube);
+  function inputCubeValue(crrCube, containerBox) {
+    let cubeArray = getCubeArray(crrCube);
     for (let i = 0; i < containerBox.length; i++) {
       containerBox[i].innerText = cubeArray[i];
     }
@@ -56,7 +56,7 @@ function addCube() {
   let bigBox = createBox($outputBox, VIEW_CONTAINER);
   let cube = drawCube(bigBox, LINE_CONTAINER);
   let colorBox = cube.getElementsByClassName(COLORBOX);
-  inputCubeValue(rubiksCube, colorBox);
+  inputCubeValue(crrCube, colorBox);
   getColor(colorBox);
   return cube;
 }
@@ -211,7 +211,17 @@ let currentKey = currentCube.L;
 // rotate right
 function rotateA(key) {
   rotate(key);
-  addCube();
+  let newCube = getNewCube(rubiksCube, currentKey);
+  let myCube = addCube(newCube);
+  function getNewCube(cube, key) {
+    cube[0] = key.U;
+    cube[1] = key.L;
+    cube[2] = key.F;
+    cube[3] = key.R;
+    cube[5] = key.D;
+    return cube;
+  }
+  return myCube;
 }
 
 // rotate left
