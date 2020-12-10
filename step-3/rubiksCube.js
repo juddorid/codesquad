@@ -273,18 +273,29 @@ function rotate(cube, key) {
     return fix;
   }
   function getNewCube(cube, key) {
+    // function checkCenterValue(cube, key) {
+    //   let defaultFaceValues = [key.F[1][1], key.U[1][1], key.D[1][1], key.L[1][1], key.R[1][1], key.B[1][1]];
+    //   let currentFaces = [key.F, key.U, key.D, key.L, key.R, key.B];
+    //   for (let i = 0; i < cube.length; i++) {
+    //     for (let j = 0; j < defaultFaceValues.length; j++) {
+    //       if (cube[i][1][1] === defaultFaceValues[j]) {
+    //         cube[i] = currentFaces[j];
+    //       }
+    //     }
+    //   }
+    //   return cube;
+    // }
+    // let newCube = checkCenterValue(cube, key);
+    // return newCube;
     cube[0] = key.U;
     cube[1] = key.L;
     cube[2] = key.F;
     cube[3] = key.R;
     cube[4] = key.B;
     cube[5] = key.D;
-    return cube;
   }
-
-  let newCube = getNewCube(cube, key);
-
-  return newCube;
+  let myCurrentCube = getNewCube(cube, key);
+  return myCurrentCube;
 }
 
 // Q
