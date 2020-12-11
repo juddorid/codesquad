@@ -13,8 +13,16 @@ const $inputContainer = document.getElementsByClassName('input_container');
 
 let start;
 let end;
+let time = 0;
 let cubeCount = 1;
 start = new Date().getTime();
+
+function endTime() {
+  end = new Date().getTime();
+  time = (end - start) / 1000;
+  getInfoViewBox(time);
+}
+
 // init
 let perfectCube = getRubiksCube(colorList);
 let rubiksCube = getRubiksCube(colorList);
@@ -113,12 +121,11 @@ const getCommandViewBox = function (cmd, num) {
 };
 
 // info view box
-function getInfoViewBox(start, end) {
+function getInfoViewBox(num) {
   let box = createDIV(COLORBOX);
   $inputContainer[1].append(box);
-  box.innerText = `시간경과: ${end - start}`;
+  box.innerText = `경과시간: ${num}sec`;
 }
-getInfoViewBox(start, end);
 
 // get Cube Array
 function getCubeArray(cube) {
@@ -393,8 +400,9 @@ function rotate(cube, value) {
 }
 
 // Q
-function quitBye() {
+function quitBye(time) {
   $inputBox.value = 'BYE~!';
+  endTime(time);
 }
 // thanks to
 // function thanksTo() {
