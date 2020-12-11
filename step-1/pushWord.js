@@ -42,15 +42,21 @@ const inputCheck = function (txt, dir, num) {
   const numberCheck = function (num) {
     if (isNaN(num)) {
       alert('숫자를 입력해주세요.');
+      moveFocus($inputNumber);
+      resetValue($inputNumber);
     } else if (Number(num) !== parseInt(num)) {
       alert('정수로 입력해주세요.');
+      moveFocus($inputNumber);
+      resetValue($inputNumber);
     } else if (num.length > 16) {
       alert('정수로 입력해주세요.');
+      moveFocus($inputNumber);
+      resetValue($inputNumber);
     } else if (num < -100 || num > 100) {
       alert('-100보다 크거나 같고, 100보다 작은 수를 입력해주세요.');
+      moveFocus($inputNumber);
+      resetValue($inputNumber);
     }
-    moveFocus($inputNumber);
-    resetValue($inputNumber);
   };
   spaceCheck(txt, dir, num);
   directionCheck(dir);
