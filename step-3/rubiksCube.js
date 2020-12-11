@@ -13,6 +13,7 @@ const $inputBox = document.querySelector('body > div > div.input_container > inp
 let cubeCount = 0;
 
 // init
+let perfectCube = getRubiksCube(colorList);
 let rubiksCube = getRubiksCube(colorList);
 let cube = addCube();
 
@@ -279,6 +280,9 @@ let currentCube = getCurrnetCube(rubiksCube);
 function rotateA(cube, key, value) {
   rotate(cube, key, value);
   addCube();
+  let prevCube = getCubeArray(rubiksCube);
+  let originCube = getCubeArray(perfectCube);
+  isPerfectCube(prevCube, originCube);
 }
 
 // rotate left
@@ -368,10 +372,7 @@ const getInputValue = function () {
   return lastValue;
 };
 
-// U U' R R' L L' B B' Q
-// (singleQuote 정리)
-// 공백제거
-// 문자열 유효한지 검사
+// input value Check
 const valueCheck = function (value) {
   let checkValue = true;
   let valueArr = value.split('');
@@ -401,7 +402,7 @@ const valueCheck = function (value) {
       alert('값을 입력해주세요.(빈칸입니다.)');
       $inputBox.focus();
       checkValue = false;
-      return checkValue;
+      isCheckFalse(checkValue);
     }
   }
   function checkSingleQuote(value) {
@@ -415,9 +416,8 @@ const valueCheck = function (value) {
       alert('잘못된 입력입니다.(sigleQuote연속)');
       resetFocus();
       checkValue = false;
-      return checkValue;
+      isCheckFalse(checkValue);
     }
-    return value;
   }
   function delSingleQuote(value) {
     let noSingleQuoteArr = [];
@@ -442,9 +442,15 @@ const valueCheck = function (value) {
       alert('알 수 없는 입력값이 있습니다.');
       resetFocus();
       checkValue = false;
-      return checkValue;
+      isCheckFalse(checkValue);
     }
   }
+  function isCheckFalse(check) {
+    if (!check) {
+      return;
+    }
+  }
+  return checkValue;
 };
 
 // movePart
@@ -463,6 +469,22 @@ const findingMove = function () {
   }
   resetFocus();
 };
+
+function isPerfectCube(prev, current) {
+  let count = 0;
+  let result = false;
+  current.forEach((element, i) => {
+    if (element === prev[i]) {
+      count++;
+    }
+    if (count === current.length) {
+      alert('추카포카');
+      result = true;
+    }
+  });
+  return result;
+}
+
 let currentkey;
 const movingCube = function (value) {
   switch (value) {
@@ -471,48 +493,48 @@ const movingCube = function (value) {
       rotateA(rubiksCube, currentKey, value);
       break;
     case cmdList[1]:
-      currentKey = currentCube[value];
-      rotateB(rubiksCube, currentKey, value);
+      currentKey = currentCube[cmdList[0]];
+      rotateB(rubiksCube, currentKey, cmdList[0]);
       break;
     case cmdList[2]:
       currentKey = currentCube[value];
       rotateA(rubiksCube, currentKey, value);
       break;
     case cmdList[3]:
-      currentKey = currentCube[value];
-      rotateB(rubiksCube, currentKey, value);
+      currentKey = currentCube[cmdList[2]];
+      rotateB(rubiksCube, currentKey, cmdList[2]);
       break;
     case cmdList[4]:
       currentKey = currentCube[value];
       rotateA(rubiksCube, currentKey, value);
       break;
     case cmdList[5]:
-      currentKey = currentCube[value];
-      rotateB(rubiksCube, currentKey, value);
+      currentKey = currentCube[cmdList[4]];
+      rotateB(rubiksCube, currentKey, cmdList[4]);
       break;
     case cmdList[6]:
       currentKey = currentCube[value];
       rotateA(rubiksCube, currentKey, value);
       break;
     case cmdList[7]:
-      currentKey = currentCube[value];
-      rotateB(rubiksCube, currentKey, value);
+      currentKey = currentCube[cmdList[6]];
+      rotateB(rubiksCube, currentKey, cmdList[6]);
       break;
     case cmdList[8]:
       currentKey = currentCube[value];
       rotateA(rubiksCube, currentKey, value);
       break;
     case cmdList[9]:
-      currentKey = currentCube[value];
-      rotateB(rubiksCube, currentKey, value);
+      currentKey = currentCube[cmdList[8]];
+      rotateB(rubiksCube, currentKey, cmdList[8]);
       break;
     case cmdList[10]:
-      currentKey = currentCube[value];
+      currentKey = currentCube[cmdList[10]];
       rotateA(rubiksCube, currentKey, value);
       break;
     case cmdList[11]:
       currentKey = currentCube[value];
-      rotateB(rubiksCube, currentKey, value);
+      rotateB(rubiksCube, currentKey, cmdList[10]);
       break;
     case cmdList[12]:
       quitBye();
