@@ -31,7 +31,6 @@ function randomCommand() {
     ranCmdArr.push(randomList[randomNumber]);
     randomList.splice(randomNumber, 1);
   }
-
   let result = ranCmdArr;
   return result;
 }
@@ -410,9 +409,14 @@ function isPerfectCube() {
     if (element === prev[i]) {
       count++;
     }
-    if (cubeCount !== 1 && count === perfect.length) {
+    if (cubeCount > 2 && count === perfect.length) {
       quitBye();
-      alert('이용해주셔서 감사합니다. 뚜뚜뚜.');
+      let box = createDIV(COLORBOX);
+      $inputContainer[1].append(box);
+      box.innerText = `조작횟수: ${cubeCount - 1}`;
+      let box2 = createDIV(COLORBOX);
+      $inputContainer[1].append(box2);
+      box2.innerText = '완성!!! 축하합니다.';
       result = true;
     }
   });
@@ -544,8 +548,9 @@ function rotateCube(cmd) {
   }
 }
 
-function rotateRandomCube(cmd) {
+function rotateRandomCube() {
   // for each로 바꿀수있나
+  let cmd = randomCommand();
   for (let i = 0; i < cmd.length; i++) {
     for (let j = 0; j < cmdList.length; j++) {
       if (cmd[i] === cmdList[j]) {
