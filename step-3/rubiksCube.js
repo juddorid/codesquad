@@ -10,7 +10,7 @@ const $outputBox = document.querySelector('#output_box');
 const $inputButton = document.querySelector('#input_btn');
 const $inputBox = document.querySelector('body > div > div.input_container > input.input_box');
 
-let cubeCount = 0;
+let cubeCount = 1;
 
 // init
 let perfectCube = getRubiksCube(colorList);
@@ -104,10 +104,10 @@ function createCubeDOM() {
   return wrapper;
 }
 // command view box
-const getCommandViewBox = function (command) {
+const getCommandViewBox = function (cmd, num) {
   let box = createDIV(COLORBOX);
   $outputBox.append(box);
-  box.innerText = command;
+  box.innerText = `입력값: ${cmd} , 조작횟수: ${num}`;
 };
 
 // get Cube Array
@@ -274,13 +274,30 @@ function decryption(cube) {
   return myDecryption;
 }
 
+// 큐브가 완성인지 확인
+function isPerfectCube() {
+  let prev = getCubeArray(rubiksCube);
+  let perfect = getCubeArray(perfectCube);
+  let count = 0;
+  let result = false;
+  perfect.forEach((element, i) => {
+    if (element === prev[i]) {
+      count++;
+    }
+    if (count === perfect.length) {
+      alert('이용해주셔서 감사합니다. 뚜뚜뚜.');
+      quitBye();
+      result = true;
+    }
+  });
+  return result;
+}
+
 // rotate right
 function rotateA(cube, value) {
   rotate(cube, value);
+  cubeCount++;
   addCube();
-  // let prevCube = getCubeArray(rubiksCube);
-  // let originCube = getCubeArray(perfectCube);
-  // isPerfectCube(prevCube, originCube);
 }
 
 // rotate left
@@ -288,6 +305,7 @@ function rotateB(cube, value) {
   rotate(cube, value);
   rotate(cube, value);
   rotate(cube, value);
+  cubeCount++;
   addCube();
 }
 
@@ -308,6 +326,8 @@ function rotate(cube, value) {
   let rotateCube = getRotateCube(cube, key, frontFace);
   let decryptionCube = decryption(rotateCube);
   let myRubiks = decryptionCube[value];
+  resetFocus();
+
   cube[0] = myRubiks.U;
   cube[1] = myRubiks.L;
   cube[2] = myRubiks.F;
@@ -366,6 +386,12 @@ function rotate(cube, value) {
 function quitBye() {
   $inputBox.value = 'BYE~!';
 }
+// thanks to
+// function thanksTo() {
+if (cubeCount !== 1 && isPerfectCube()) {
+  console.log('a');
+}
+// }
 
 // getInputValue
 const getInputValue = function () {
@@ -465,31 +491,13 @@ const findingMove = function () {
   for (let i = 0; i < command.length; i++) {
     for (let j = 0; j < cmdList.length; j++) {
       if (command[i] === cmdList[j]) {
-        getCommandViewBox(command[i]);
+        getCommandViewBox(command[i], cubeCount);
         movingCube(command[i]);
       }
     }
   }
-  resetFocus();
 };
 
-function isPerfectCube(prev, current) {
-  let count = 0;
-  let result = false;
-  current.forEach((element, i) => {
-    if (element === prev[i]) {
-      count++;
-    }
-    if (count === current.length) {
-      alert('추카포카');
-      quitBye();
-      result = true;
-    }
-  });
-  return result;
-}
-
-let currentkey;
 const movingCube = function (value) {
   switch (value) {
     case cmdList[0]:
@@ -541,3 +549,5 @@ const resetFocus = function () {
   $inputBox.value = '';
   $inputBox.focus();
 };
+
+// thanksTo();
