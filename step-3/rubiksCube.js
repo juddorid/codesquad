@@ -305,7 +305,7 @@ function rotate(cube, value) {
   rightToDown(fixed, key.D);
 
   // 현재 key(currentKey)가 바뀐 큐브의 모든 정보를 다 가지고 있음
-  let rotateCube = getRotateCube(cube, key);
+  let rotateCube = getRotateCube(cube, key, frontFace);
   let decryptionCube = decryption(rotateCube);
   let myRubiks = decryptionCube[value];
   cube[0] = myRubiks.U;
@@ -349,10 +349,10 @@ function rotate(cube, value) {
     D[0][2] = fix[0];
     return D;
   }
-  function getRotateCube(cube, key) {
+  function getRotateCube(cube, key, stdFace) {
     cube[0] = key.U;
     cube[1] = key.L;
-    cube[2] = key.F;
+    cube[2] = stdFace;
     cube[3] = key.R;
     cube[4] = key.B;
     cube[5] = key.D;
