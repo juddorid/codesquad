@@ -448,11 +448,12 @@ const valueCheck = function (value) {
   checkSingleQuote(noSpaceArr);
 
   let noSingleQuoteArr = delSingleQuote(noSpaceArr);
-
-  stringCheck(noSingleQuoteArr);
+  numberCheck();
+  let onlyStringValue = numberToString(noSingleQuoteArr);
+  stringCheck(onlyStringValue);
 
   if (checkValue) {
-    return noSingleQuoteArr;
+    return onlyStringValue;
   } else if (!checkValue) {
     return checkValue;
   }
@@ -500,7 +501,33 @@ const valueCheck = function (value) {
     }
     return noSingleQuoteArr;
   }
-  function numberCheck() {}
+  function numberCheck() {
+    let count = 0;
+    for (let i = 0; i < value.length; i++) {
+      if (!isNaN(value[i]) && !isNaN(value[i - 1])) {
+        count++;
+      }
+    }
+    if (count !== 0) {
+      alert('잘못된 입력입니다.(숫자연속)');
+      resetFocus();
+      checkValue = false;
+      isCheckFalse(checkValue);
+    }
+  }
+  function numberToString(value) {
+    let onlyStringValueArray = [];
+    for (let i = 0; i < value.length; i++) {
+      if (value[i] === cmdList[13]) {
+        onlyStringValueArray.push(value[i - 1]);
+      } else if (value[i] !== cmdList[13] && isNaN(value[i])) {
+        onlyStringValueArray.push(value[i]);
+      } else {
+        stringCheck(value);
+      }
+    }
+    return onlyStringValueArray;
+  }
 
   function stringCheck(value) {
     let count = 0;
@@ -629,5 +656,3 @@ const resetFocus = function () {
   $inputBox.value = '';
   $inputBox.focus();
 };
-
-// thanksTo();
