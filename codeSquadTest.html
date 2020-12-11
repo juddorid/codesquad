@@ -6,7 +6,8 @@
     <style type="text/css">
       body {
         background: #333333;
-        margin: 0 auto;
+        position: relative;
+     
       }
       a {
         text-decoration: none;
@@ -15,28 +16,70 @@
         width: 400px;
         height: 100px;
         font-size: 24px;
-        display: block;
         text-align: left;
         padding: 20px;
+        background: #333333;
+        border: 1px solid snow;
+        border-radius: 10px;
+        color: white;
       }
       .container {
+        width: 550px;
         justify-content: center;
         align-items: center;
+        border: 1px solid white;
+        margin: 0 auto;
+        padding: 5px;
+      }
+      .step-title {
+        border: 1px solid white;
+        color: white;
+        text-align: center;
+        padding: 5px;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+      }
+      .nav_box {
+        border: 1px solid white;
+        color: white;
+        text-align: center;
+        margin: 5px auto;
+        padding: 20px;
+      }
+      .step_btn:hover {
+        background:snow;
+        color: #333333;
+        transition: .4s;
       }
     </style>
     <title>Codesquad Test</title>
   </head>
   <body>
     <div class="container">
-      <a href="./step-1/step-1.html">
-        <input class="step_btn" type="button" value="STEP-1: 단어 밀어내기 구현하기" />
-      </a>
-      <a href="./step-2/step-2.html">
-        <input class="step_btn" type="button" value="STEP-2: 평면 큐브 구현하기" />
-      </a>
-      <a href="./step-3/step-3.html">
-        <input class="step_btn" type="button" value="STEP-3: 루빅스 큐브 구현하기" />
-      </a>
+      <div class="step_title">
+        <div class="nav_box">
+          <h1>Codesquad Coding Test</h1>
+        </div>
+      </div>
+      <div class="step_title">
+        <div class="nav_box">
+        <a href="./step-1/step-1.html">
+          <input class="step_btn" type="button" value="STEP-1: 단어 밀어내기 구현하기" />
+        </a>
+      </div>
+      <div class="nav_box">
+          <a href="./step-2/step-2.html">
+            <input class="step_btn" type="button" value="STEP-2: 평면 큐브 구현하기" />
+          </a>
+        </div>
+        </div>
+        <div class="nav_box">
+          <a href="./step-3/step-3.html">
+            <input class="step_btn" type="button" value="STEP-3: 루빅스 큐브 구현하기" />
+          </a>
+        </div>
+      </div>
     </div>
   </body>
 </html>
