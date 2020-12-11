@@ -9,14 +9,16 @@ const COLORBOX = 'color_box';
 const $outputBox = document.querySelector('#output_box');
 const $inputButton = document.querySelector('#input_btn');
 const $inputBox = document.querySelector('body > div > div.input_container > input.input_box');
+const $inputContainer = document.getElementsByClassName('input_container');
 
+let start;
+let end;
 let cubeCount = 1;
-
+start = new Date().getTime();
 // init
 let perfectCube = getRubiksCube(colorList);
 let rubiksCube = getRubiksCube(colorList);
 let cube = addCube();
-
 // rubiks cube
 function getRubiksCube(list) {
   // plane cube
@@ -109,6 +111,14 @@ const getCommandViewBox = function (cmd, num) {
   $outputBox.append(box);
   box.innerText = `입력값: ${cmd} , 조작횟수: ${num}`;
 };
+
+// info view box
+function getInfoViewBox(start, end) {
+  let box = createDIV(COLORBOX);
+  $inputContainer[1].append(box);
+  box.innerText = `시간경과: ${end - start}`;
+}
+getInfoViewBox(start, end);
 
 // get Cube Array
 function getCubeArray(cube) {
