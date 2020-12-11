@@ -102,6 +102,13 @@ function createCubeDOM() {
   }
   return wrapper;
 }
+// command view box
+const getCommandViewBox = function (command) {
+  let box = createDIV(COLORBOX);
+  $outputBox.append(box);
+  box.innerText = command;
+};
+
 // get Cube Array
 function getCubeArray(cube) {
   let cubeArray = [];
@@ -449,7 +456,7 @@ const findingMove = function () {
   for (let i = 0; i < command.length; i++) {
     for (let j = 0; j < cmdList.length; j++) {
       if (command[i] === cmdList[j]) {
-        // getCommandViewBox(command[i]);
+        getCommandViewBox(command[i]);
         movingCube(command[i]);
       }
     }
