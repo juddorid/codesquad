@@ -1,5 +1,5 @@
 const colorList = ['B', 'W', 'O', 'G', 'Y', 'R'];
-const cmdList = ['F', "F'", 'R', "R'", 'U', "U'", 'B', "B'", 'L', "L'", 'D', "D'", 'Q'];
+const cmdList = ['F', "F'", 'R', "R'", 'U', "U'", 'B', "B'", 'L', "L'", 'D', "D'", 'Q', '2'];
 const RUBIKS = 3;
 const MIDDLE = 4;
 const VIEW_CONTAINER = 'view_container';
@@ -17,6 +17,26 @@ let time = 0;
 let cubeCount = 1;
 start = new Date().getTime();
 
+// 숫자 구분해서 받아오기
+// 랜덤구현하기
+// 함수 20줄 이내로 정리하기
+// 뎁스 줄이기
+
+// random
+function randomCommand() {
+  let ranCmdArr = [];
+  const randomList = ['F', "F'", 'R', "R'", 'U', "U'", 'B', "B'", 'L', "L'", 'D', "D'"];
+  while (ranCmdArr.length !== 10) {
+    let randomNumber = Math.floor(Math.random() * (randomList.length - 0) + 0);
+    ranCmdArr.push(randomList[randomNumber]);
+    randomList.splice(randomNumber, 1);
+  }
+
+  let result = ranCmdArr;
+  return result;
+}
+
+// endTime
 function endTime() {
   end = new Date().getTime();
   time = (end - start) / 1000;
@@ -27,6 +47,7 @@ function endTime() {
 let perfectCube = getRubiksCube(colorList);
 let rubiksCube = getRubiksCube(colorList);
 let cube = addCube();
+isPerfectCube();
 // rubiks cube
 function getRubiksCube(list) {
   // plane cube
@@ -47,9 +68,15 @@ function getRubiksCube(list) {
   }
   return rubiksCube;
 }
-
 // add cube
 function addCube() {
+  let bigBox = createBox($outputBox, VIEW_CONTAINER);
+  let cube = drawCube(bigBox, LINE_CONTAINER);
+  let colorBox = cube.getElementsByClassName(COLORBOX);
+
+  inputCubeValue(rubiksCube, colorBox);
+  getColor(colorBox);
+
   // input cube value
   function inputCubeValue(cube, containerBox) {
     let cubeArray = getCubeArray(cube);
@@ -64,11 +91,7 @@ function addCube() {
       containerBox[i].style.background = colorSet[colorBox[i].innerText];
     }
   }
-  let bigBox = createBox($outputBox, VIEW_CONTAINER);
-  let cube = drawCube(bigBox, LINE_CONTAINER);
-  let colorBox = cube.getElementsByClassName(COLORBOX);
-  inputCubeValue(rubiksCube, colorBox);
-  getColor(colorBox);
+
   return cube;
 }
 
@@ -77,6 +100,21 @@ function createBox(box, className) {
   let container = createDIV(className);
   box.append(container);
   return container;
+}
+// create div
+function createDIV(className) {
+  let tempDiv = document.createElement('div');
+  tempDiv.className = className;
+  return tempDiv;
+}
+// create wrapper > and color box in line container
+function createCubeDOM() {
+  const boxSize = 9;
+  let wrapper = createDIV(WRAPPER);
+  for (let i = 0; i < boxSize; i++) {
+    wrapper.append(createDIV(COLORBOX));
+  }
+  return wrapper;
 }
 
 // drawing Cube
@@ -98,33 +136,19 @@ function drawCube(box, className) {
   oneWrapper();
   return box;
 }
-// create div
-function createDIV(className) {
-  let tempDiv = document.createElement('div');
-  tempDiv.className = className;
-  return tempDiv;
-}
-// create wrapper > and color box in line container
-function createCubeDOM() {
-  const boxSize = 9;
-  let wrapper = createDIV(WRAPPER);
-  for (let i = 0; i < boxSize; i++) {
-    wrapper.append(createDIV(COLORBOX));
-  }
-  return wrapper;
-}
+
 // command view box
-const getCommandViewBox = function (cmd, num) {
+function getCommandViewBox(cmd, num) {
   let box = createDIV(COLORBOX);
   $outputBox.append(box);
   box.innerText = `입력값: ${cmd} , 조작횟수: ${num}`;
-};
+}
 
 // info view box
 function getInfoViewBox(num) {
   let box = createDIV(COLORBOX);
   $inputContainer[1].append(box);
-  box.innerText = `경과시간: ${num}sec`;
+  box.innerText = `경과시간: ${num} sec`;
 }
 
 // get Cube Array
@@ -291,30 +315,9 @@ function decryption(cube) {
   return myDecryption;
 }
 
-// 큐브가 완성인지 확인
-function isPerfectCube() {
-  let prev = getCubeArray(rubiksCube);
-  let perfect = getCubeArray(perfectCube);
-  let count = 0;
-  let result = false;
-  perfect.forEach((element, i) => {
-    if (element === prev[i]) {
-      count++;
-    }
-    if (count === perfect.length) {
-      alert('이용해주셔서 감사합니다. 뚜뚜뚜.');
-      quitBye();
-      result = true;
-    }
-  });
-  return result;
-}
-
 // rotate right
 function rotateA(cube, value) {
   rotate(cube, value);
-  cubeCount++;
-  addCube();
 }
 
 // rotate left
@@ -322,8 +325,6 @@ function rotateB(cube, value) {
   rotate(cube, value);
   rotate(cube, value);
   rotate(cube, value);
-  cubeCount++;
-  addCube();
 }
 
 function rotate(cube, value) {
@@ -338,12 +339,12 @@ function rotate(cube, value) {
   leftToUp(key.L, key.U);
   downToLeft(key.D, key.L);
   rightToDown(fixed, key.D);
+  resetFocus();
 
   // 현재 key(currentKey)가 바뀐 큐브의 모든 정보를 다 가지고 있음
   let rotateCube = getRotateCube(cube, key, frontFace);
   let decryptionCube = decryption(rotateCube);
   let myRubiks = decryptionCube[value];
-  resetFocus();
 
   cube[0] = myRubiks.U;
   cube[1] = myRubiks.L;
@@ -399,17 +400,30 @@ function rotate(cube, value) {
   return cube;
 }
 
+// 큐브가 완성인지 확인
+function isPerfectCube() {
+  let prev = getCubeArray(rubiksCube);
+  let perfect = getCubeArray(perfectCube);
+  let count = 0;
+  let result = false;
+  perfect.forEach((element, i) => {
+    if (element === prev[i]) {
+      count++;
+    }
+    if (cubeCount !== 1 && count === perfect.length) {
+      quitBye();
+      alert('이용해주셔서 감사합니다. 뚜뚜뚜.');
+      result = true;
+    }
+  });
+  return result;
+}
+
 // Q
 function quitBye(time) {
   $inputBox.value = 'BYE~!';
   endTime(time);
 }
-// thanks to
-// function thanksTo() {
-if (cubeCount !== 1 && isPerfectCube()) {
-  console.log('a');
-}
-// }
 
 // getInputValue
 const getInputValue = function () {
@@ -425,10 +439,14 @@ const valueCheck = function (value) {
   let valueArr = value.split('');
   let upperValueArr = valueArr.map((e) => e.toUpperCase());
   let noSpaceArr = delSpace(upperValueArr);
+
   spaceCheck(noSpaceArr);
   checkSingleQuote(noSpaceArr);
+
   let noSingleQuoteArr = delSingleQuote(noSpaceArr);
+
   stringCheck(noSingleQuoteArr);
+
   if (checkValue) {
     return noSingleQuoteArr;
   } else if (!checkValue) {
@@ -478,6 +496,8 @@ const valueCheck = function (value) {
     }
     return noSingleQuoteArr;
   }
+  function numberCheck() {}
+
   function stringCheck(value) {
     let count = 0;
     for (let i = 0; i < value.length; i++) {
@@ -506,15 +526,52 @@ const findingMove = function () {
   if (command === false) {
     return;
   }
-  for (let i = 0; i < command.length; i++) {
+  rotateCube(command);
+};
+
+function rotateCube(cmd) {
+  // for each로 바꿀수있나
+  for (let i = 0; i < cmd.length; i++) {
     for (let j = 0; j < cmdList.length; j++) {
-      if (command[i] === cmdList[j]) {
-        getCommandViewBox(command[i], cubeCount);
-        movingCube(command[i]);
+      if (cmd[i] === cmdList[j]) {
+        getCommandViewBox(cmd[i], cubeCount);
+        movingCube(cmd[i]);
+        addCube();
+        cubeCount++;
+        isPerfectCube();
       }
     }
   }
-};
+}
+
+function rotateRandomCube(cmd) {
+  // for each로 바꿀수있나
+  for (let i = 0; i < cmd.length; i++) {
+    for (let j = 0; j < cmdList.length; j++) {
+      if (cmd[i] === cmdList[j]) {
+        movingCube(cmd[i]);
+        isPerfectCube();
+      }
+    }
+  }
+  let randomBox = document.querySelector('#output_box > div').getElementsByClassName(COLORBOX);
+  inputCubeValue(rubiksCube, randomBox);
+  getColor(randomBox);
+  // input cube value
+  function inputCubeValue(cube, containerBox) {
+    let cubeArray = getCubeArray(cube);
+    for (let i = 0; i < containerBox.length; i++) {
+      containerBox[i].innerText = cubeArray[i];
+    }
+  }
+  // input cube color
+  function getColor(containerBox) {
+    const colorSet = { B: 'purple', W: 'darkgray', O: 'orange', G: 'green', Y: 'yellowgreen', R: 'red' };
+    for (let i = 0; i < containerBox.length; i++) {
+      containerBox[i].style.background = colorSet[containerBox[i].innerText];
+    }
+  }
+}
 
 const movingCube = function (value) {
   switch (value) {
