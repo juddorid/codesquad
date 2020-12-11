@@ -275,8 +275,8 @@ function decryption(cube) {
 }
 
 // rotate right
-function rotateA(cube, key, value) {
-  rotate(cube, key, value);
+function rotateA(cube, value) {
+  rotate(cube, value);
   addCube();
   // let prevCube = getCubeArray(rubiksCube);
   // let originCube = getCubeArray(perfectCube);
@@ -284,14 +284,16 @@ function rotateA(cube, key, value) {
 }
 
 // rotate left
-function rotateB(cube, key, value) {
-  rotate(cube, key, value);
-  rotate(cube, key, value);
-  rotate(cube, key, value);
+function rotateB(cube, value) {
+  rotate(cube, value);
+  rotate(cube, value);
+  rotate(cube, value);
   addCube();
 }
 
-function rotate(cube, key, value) {
+function rotate(cube, value) {
+  let currentKey = getCurrnetCube(cube);
+  let key = currentKey[value];
   // operating
   let fixed = fix(key.R);
   // 기준면 회전
@@ -491,52 +493,40 @@ let currentkey;
 const movingCube = function (value) {
   switch (value) {
     case cmdList[0]:
-      currentKey = getCurrnetCube(rubiksCube)[value];
-      rotateA(rubiksCube, currentKey, value);
+      rotateA(rubiksCube, value);
       break;
     case cmdList[1]:
-      currentKey = getCurrnetCube(rubiksCube)[cmdList[0]];
-      rotateB(rubiksCube, currentKey, cmdList[0]);
+      rotateB(rubiksCube, cmdList[0]);
       break;
     case cmdList[2]:
-      currentKey = getCurrnetCube(rubiksCube)[value];
-      rotateA(rubiksCube, currentKey, value);
+      rotateA(rubiksCube, value);
       break;
     case cmdList[3]:
-      currentKey = getCurrnetCube(rubiksCube)[cmdList[2]];
-      rotateB(rubiksCube, currentKey, cmdList[2]);
+      rotateB(rubiksCube, cmdList[2]);
       break;
     case cmdList[4]:
-      currentKey = getCurrnetCube(rubiksCube)[value];
-      rotateA(rubiksCube, currentKey, value);
+      rotateA(rubiksCube, value);
       break;
     case cmdList[5]:
-      currentKey = getCurrnetCube(rubiksCube)[cmdList[4]];
-      rotateB(rubiksCube, currentKey, cmdList[4]);
+      rotateB(rubiksCube, cmdList[4]);
       break;
     case cmdList[6]:
-      currentKey = getCurrnetCube(rubiksCube)[value];
-      rotateA(rubiksCube, currentKey, value);
+      rotateA(rubiksCube, value);
       break;
     case cmdList[7]:
-      currentKey = getCurrnetCube(rubiksCube)[cmdList[6]];
-      rotateB(rubiksCube, currentKey, cmdList[6]);
+      rotateB(rubiksCube, cmdList[6]);
       break;
     case cmdList[8]:
-      currentKey = getCurrnetCube(rubiksCube)[value];
-      rotateA(rubiksCube, currentKey, value);
+      rotateA(rubiksCube, value);
       break;
     case cmdList[9]:
-      currentKey = currentCube[cmdList[8]];
-      rotateB(rubiksCube, currentKey, cmdList[8]);
+      rotateB(rubiksCube, cmdList[8]);
       break;
     case cmdList[10]:
-      currentKey = currentCube[cmdList[10]];
-      rotateA(rubiksCube, currentKey, value);
+      rotateA(rubiksCube, value);
       break;
     case cmdList[11]:
-      currentKey = currentCube[value];
-      rotateB(rubiksCube, currentKey, cmdList[10]);
+      rotateB(rubiksCube, cmdList[10]);
       break;
     case cmdList[12]:
       quitBye();
