@@ -13,7 +13,7 @@
         color: transparent;
       }
       .container {
-        width: 340px;
+        width: 550px;
         justify-content: center;
         align-items: center;
         border: 1px solid white;
@@ -37,16 +37,18 @@
         color: white;
       }
       .step-title {
-        width: 300px;
         height: 30px;
         border: 1px solid white;
         color: white;
         text-align: center;
         margin: 5px auto;
         padding: 5px;
+        justify-content: center;
+        align-items: center;
+        display: flex;
       }
       .step-1 {
-        width: 300px;
+        width: 540px;
         height: 30px;
         text-align: center;
         font-size: 16px;
@@ -54,13 +56,29 @@
         display: flex;
       }
       .step-1-button {
-        width: 300px;
         height: 30px;
         text-align: center;
         font-size: 16px;
         justify-content: center;
         align-items: center;
+        display: flex;
         margin: 4px auto;
+        background: #333333;
+        border: 1px solid white;
+        color: white;
+      }
+      .nav_button:hover {
+        color: red;
+        transition: 0.4s;
+      }
+      .step-1-button:hover {
+        color: red;
+        transition: 0.4s;
+      }
+      #step-1-input-result {
+        background: #333333;
+        border: 1px solid white;
+        color: yellow;
       }
     </style>
     <title>Step-1</title>
@@ -74,9 +92,9 @@
         <a href="../codeSquadTest.html">
           <input class="nav_button" type="button" value="FIRST" />
         </a>
-        <a href="../step-2/step-2.html"></a>
-        <input class="nav_button" type="button" value="STEP-2" />
-      </a>
+        <a href="../step-2/step-2.html">
+          <input class="nav_button" type="button" value="STEP-2" />
+        </a>
       </div>
       <div class="step-title">Step-1: 단어 밀어내기 구현하기</div>
       <input class="step-1" id="step-1-input-word" type="text" placeholder="단어를 입력해주세요." />
@@ -86,18 +104,16 @@
         type="text"
         placeholder="방향을 입력해주세요. (L or R)"
         maxlength="1"
-        onkeyup="autoTab($inputDirection, $inputNumber)"
       />
       <input class="step-1" id="step-1-input-number" type="text" placeholder="숫자를 입력해주세요. (-100 <= n < 100)" />
-      <input
-        class="step-1-button step-1"
-        type="submit"
-        value="실행"
-        id="step-1-btn"
-        onclick="operate($inputWord.value, $inputDirection.value, $inputNumber.value)"
-      />
+      <input class="step-1-button step-1" type="submit" value="실행" id="step-1-btn" onclick="goCheck()" />
       <input class="step-1-button step-1" type="submit" value="다시하기" id="step-1-btn" onclick="resetAll()" />
-      <input class="step-1" id="step-1-input-result" disabled placeholder="실행 버튼을 누르면 결과가 나타나요." />
+      <input
+        class="step-1"
+        id="step-1-input-result"
+        disabled
+        placeholder="실행 버튼을 누르면 이곳에 결과가 나타나요."
+      />
     </div>
   </body>
   <script src="./pushWord.js"></script>
