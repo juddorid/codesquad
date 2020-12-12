@@ -8,6 +8,7 @@
         background: #3e3e3e;
       }
       .container {
+        width: 550px;
         justify-content: center;
         align-items: center;
         border: 1px solid white;
@@ -69,6 +70,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        margin: 5px;
+        border-radius: 4px;
       }
       .input-title {
         width: 100px;
@@ -131,8 +134,8 @@
       <div class="step-title">Step-3: 루빅스 큐브 구현하기</div>
       <div class="input_container">
         <input class="button input_button" type="button" value="CUBE   >>> " onClick="window.location.reload()" />
-        <input type="text" class="input_box" />
-        <input type="submit" class="button input_button" id="random_btn" value="RANDOM" onclick="" />
+        <input type="text" class="input_box" autofocus />
+        <input type="submit" class="button input_button" id="random_btn" value="RANDOM" onclick="rotateRandomCube()" />
         <input type="submit" class="button input_button" id="input_btn" value="GO!" onclick="findingMove()" />
       </div>
       <div class="input_container"></div>

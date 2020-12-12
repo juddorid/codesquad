@@ -10,6 +10,7 @@ const $outputBox = document.querySelector('#output_box');
 const $inputButton = document.querySelector('#input_btn');
 const $inputBox = document.querySelector('body > div > div.input_container > input.input_box');
 const $inputContainer = document.getElementsByClassName('input_container');
+const BYE = 'BYE~!';
 
 let start;
 let end;
@@ -31,7 +32,6 @@ function randomCommand() {
     ranCmdArr.push(randomList[randomNumber]);
     randomList.splice(randomNumber, 1);
   }
-
   let result = ranCmdArr;
   return result;
 }
@@ -410,9 +410,14 @@ function isPerfectCube() {
     if (element === prev[i]) {
       count++;
     }
-    if (cubeCount !== 1 && count === perfect.length) {
+    if (cubeCount > 2 && count === perfect.length) {
       quitBye();
-      alert('이용해주셔서 감사합니다. 뚜뚜뚜.');
+      let box = createDIV(COLORBOX);
+      $inputContainer[1].append(box);
+      box.innerText = `조작횟수: ${cubeCount - 1}`;
+      let box2 = createDIV(COLORBOX);
+      $inputContainer[1].append(box2);
+      box2.innerText = '완성!!! 축하합니다.';
       result = true;
     }
   });
@@ -421,8 +426,9 @@ function isPerfectCube() {
 
 // Q
 function quitBye(time) {
-  $inputBox.value = 'BYE~!';
+  $inputBox.value = BYE;
   endTime(time);
+  $inputBox.disabled = true;
 }
 
 // getInputValue
@@ -435,22 +441,41 @@ const getInputValue = function () {
 
 // input value Check
 const valueCheck = function (value) {
-  let checkValue = true;
+  const SPACE_VALUE = '값을 입력해주세요.(빈칸입니다.)';
+  const SINGLE_QUOTE = '잘못된 입력입니다.(sigleQuote연속)';
+  const NUMBER_NUMBER = '잘못된 입력입니다.(숫자연속)';
+  const UNKNOWN_VALUE = '알 수 없는 입력값이 있습니다.';
+  const RESTART = 'CUBE 버튼을 누르면 다시 시작합니다.';
+
   let valueArr = value.split('');
   let upperValueArr = valueArr.map((e) => e.toUpperCase());
   let noSpaceArr = delSpace(upperValueArr);
-
-  spaceCheck(noSpaceArr);
-  checkSingleQuote(noSpaceArr);
+  if (finishCheck()) {
+    alert(RESTART);
+    return false;
+  }
+  if (spaceCheck(noSpaceArr)) {
+    alert(SPACE_VALUE);
+    $inputBox.focus();
+    return false;
+  }
+  if (checkSingleQuote(noSpaceArr)) {
+    alert(SINGLE_QUOTE);
+    resetFocus();
+    return false;
+  }
 
   let noSingleQuoteArr = delSingleQuote(noSpaceArr);
-
-  stringCheck(noSingleQuoteArr);
-
-  if (checkValue) {
-    return noSingleQuoteArr;
-  } else if (!checkValue) {
-    return checkValue;
+  if (numberCheck()) {
+    alert(NUMBER_NUMBER);
+    resetFocus();
+    return false;
+  }
+  let onlyStringValue = numberToString(noSingleQuoteArr);
+  if (stringCheck(onlyStringValue)) {
+    alert(UNKNOWN_VALUE);
+    resetFocus();
+    return false;
   }
 
   function delSpace(value) {
@@ -462,13 +487,11 @@ const valueCheck = function (value) {
     }
     return noSpaceArr;
   }
+  function finishCheck() {
+    if ($inputBox.disabled) return true;
+  }
   function spaceCheck(value) {
-    if (value.length === 0) {
-      alert('값을 입력해주세요.(빈칸입니다.)');
-      $inputBox.focus();
-      checkValue = false;
-      isCheckFalse(checkValue);
-    }
+    if (value.length === 0) return true;
   }
   function checkSingleQuote(value) {
     let count = 0;
@@ -477,12 +500,7 @@ const valueCheck = function (value) {
         count++;
       }
     }
-    if (count !== 0) {
-      alert('잘못된 입력입니다.(sigleQuote연속)');
-      resetFocus();
-      checkValue = false;
-      isCheckFalse(checkValue);
-    }
+    if (count !== 0) return true;
   }
   function delSingleQuote(value) {
     let noSingleQuoteArr = [];
@@ -496,7 +514,28 @@ const valueCheck = function (value) {
     }
     return noSingleQuoteArr;
   }
-  function numberCheck() {}
+  function numberCheck() {
+    let count = 0;
+    for (let i = 0; i < value.length; i++) {
+      if (!isNaN(value[i]) && !isNaN(value[i - 1])) {
+        count++;
+      }
+    }
+    if (count !== 0) return true;
+  }
+  function numberToString(value) {
+    let onlyStringValueArray = [];
+    for (let i = 0; i < value.length; i++) {
+      if (value[i] === cmdList[13]) {
+        onlyStringValueArray.push(value[i - 1]);
+      } else if (value[i] !== cmdList[13] && isNaN(value[i])) {
+        onlyStringValueArray.push(value[i]);
+      } else {
+        stringCheck(value);
+      }
+    }
+    return onlyStringValueArray;
+  }
 
   function stringCheck(value) {
     let count = 0;
@@ -505,19 +544,9 @@ const valueCheck = function (value) {
         count++;
       }
     }
-    if (count !== 0) {
-      alert('알 수 없는 입력값이 있습니다.');
-      resetFocus();
-      checkValue = false;
-      isCheckFalse(checkValue);
-    }
+    if (count !== 0) return true;
   }
-  function isCheckFalse(check) {
-    if (!check) {
-      return;
-    }
-  }
-  return checkValue;
+  return onlyStringValue;
 };
 
 // movePart
@@ -530,29 +559,22 @@ const findingMove = function () {
 };
 
 function rotateCube(cmd) {
-  // for each로 바꿀수있나
   for (let i = 0; i < cmd.length; i++) {
-    for (let j = 0; j < cmdList.length; j++) {
-      if (cmd[i] === cmdList[j]) {
-        getCommandViewBox(cmd[i], cubeCount);
-        movingCube(cmd[i]);
-        addCube();
-        cubeCount++;
-        isPerfectCube();
-      }
+    getCommandViewBox(cmd[i], cubeCount);
+    movingCube(cmd[i]);
+    if (cmd[i] !== cmdList[12]) {
+      addCube();
     }
+    cubeCount++;
+    isPerfectCube();
   }
 }
 
-function rotateRandomCube(cmd) {
-  // for each로 바꿀수있나
+function rotateRandomCube() {
+  let cmd = randomCommand();
   for (let i = 0; i < cmd.length; i++) {
-    for (let j = 0; j < cmdList.length; j++) {
-      if (cmd[i] === cmdList[j]) {
-        movingCube(cmd[i]);
-        isPerfectCube();
-      }
-    }
+    movingCube(cmd[i]);
+    isPerfectCube();
   }
   let randomBox = document.querySelector('#output_box > div').getElementsByClassName(COLORBOX);
   inputCubeValue(rubiksCube, randomBox);
@@ -624,5 +646,3 @@ const resetFocus = function () {
   $inputBox.value = '';
   $inputBox.focus();
 };
-
-// thanksTo();
