@@ -4,20 +4,25 @@ const $inputNumber = document.querySelector('#step-1-input-number');
 const $resultBox = document.querySelector('#step-1-input-result');
 const LEFT = 'L';
 const RIGHT = 'R';
-const PLUS = 'plus';
-const MINUS = 'minus';
 
-const operate = function (txt, dir, num) {
-  inputCheck(txt, dir, num);
+function goCheck() {
+  let checkedValue = inputCheck();
+  if (!checkedValue) {
+    return;
+  }
+  operate($inputWord.value, $inputDirection.value, $inputNumber.value);
+}
 
+function operate(txt, dir, num) {
   let unifiedDirection = dir.toUpperCase();
   let absNumber = Math.abs(num);
   let lastDirection = getDirection(unifiedDirection, num);
   let lastWord = pushWord(txt, lastDirection, absNumber);
-  return ($resultBox.value = lastWord.join(''));
-};
+  $resultBox.value = lastWord.join('');
+  console.log(txt, dir, num, $resultBox.value);
+}
 
-const inputCheck = function (txt, dir, num) {
+function inputCheck() {
   const SPACE_ALERT = '빈칸을 입력해주세요.';
   const DIR_ALERT = 'L 또는 R 만 입력해주세요. (소문자도 가능해요)';
   const NUM_ALERT = {
@@ -26,48 +31,65 @@ const inputCheck = function (txt, dir, num) {
     wrongSize: '-100보다 크거나 같고, 100보다 작은 수를 입력해주세요.',
   };
 
-  if (spaceCheck(txt, dir, num)) {
+  if (inputSpaceCheck()) {
     alert(SPACE_ALERT);
-  } else if (directionCheck(dir)) {
+    return false;
+  }
+
+  if (inputDirCheck()) {
     alert(DIR_ALERT);
     resetValue($inputDirection);
-  } else if (numberCheck(num)) {
+    return false;
+  }
+
+  if (inputNumCheck()) {
+    alert(inputNumCheck());
     moveFocus($inputNumber);
     resetValue($inputNumber);
+    return false;
   }
-  console.log(txt, dir, num);
-  function spaceCheck(txt, dir, num) {
-    if (txt === '') {
-      moveFocus($inputWord);
-      return SPACE_ALERT;
-    } else if (dir === '') {
-      moveFocus($inputDirection);
-      return SPACE_ALERT;
-    } else if (num === '') {
-      moveFocus($inputNumber);
-      return SPACE_ALERT;
-    }
-  }
-  function directionCheck(dir) {
-    if (dir !== 'L' && dir !== 'l' && dir !== 'R' && dir !== 'r' && dir.length !== 0) {
-      moveFocus($inputDirection);
-      return DIR_ALERT;
-    }
-  }
-  function numberCheck(num) {
-    if (isNaN(num)) {
-      return NUM_ALERT.notNum;
-    } else if (Number(num) !== parseInt(num)) {
-      return NUM_ALERT.notInt;
-    } else if (num.length > 16) {
-      return NUM_ALERT.notInt;
-    } else if (num < -100 || num > 100) {
-      return NUM_ALERT.wrongSize;
-    }
-  }
-};
 
-const getDirection = function (dir, num) {
+  function inputSpaceCheck() {
+    const spaceCheck = (box) => box.value === '';
+    if (spaceCheck($inputWord)) {
+      moveFocus($inputWord);
+      return true;
+    }
+    if (spaceCheck($inputDirection)) {
+      moveFocus($inputDirection);
+      return true;
+    }
+    if (spaceCheck($inputNumber)) {
+      moveFocus($inputNumber);
+      return true;
+    }
+    return false;
+  }
+
+  function inputDirCheck() {
+    const dirCheck = (box) => box.value.toUpperCase() !== LEFT && box.value.toUpperCase() !== RIGHT;
+    if (dirCheck($inputDirection)) {
+      moveFocus($inputDirection);
+      return true;
+    }
+  }
+
+  function inputNumCheck() {
+    const isNaNCheck = (box) => isNaN(box.value);
+    const intCheck = (box) => Number(box.value) !== parseInt(box.value);
+    const floorCheck = (box) => box.value.length > 16;
+    const sizeCheck = (box) => box.value < -100 || box.value > 100;
+
+    if (isNaNCheck($inputNumber)) return NUM_ALERT.notNum;
+    if (intCheck($inputNumber) || floorCheck($inputNumber)) return NUM_ALERT.notInt;
+    if (sizeCheck($inputNumber)) return NUM_ALERT.wrongSize;
+  }
+  return true;
+}
+
+function getDirection(dir, num) {
+  const PLUS = 'plus';
+  const MINUS = 'minus';
   const checkNumber = (num) => (num > 0 ? PLUS : MINUS);
   let checkedNumber = checkNumber(num);
   let lastDirection;
@@ -77,9 +99,9 @@ const getDirection = function (dir, num) {
     lastDirection = RIGHT;
   }
   return lastDirection;
-};
+}
 
-const pushWord = function (txt, dir, num) {
+function pushWord(txt, dir, num) {
   const goLeft = (arr) => arr.push(arr.shift());
   const goRight = (arr) => arr.unshift(arr.pop());
   let wordArr = txt.split('');
@@ -91,7 +113,7 @@ const pushWord = function (txt, dir, num) {
     }
   }
   return wordArr;
-};
+}
 
 // auto tab
 function autoTab(current, next) {
