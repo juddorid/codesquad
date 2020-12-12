@@ -20,6 +20,7 @@ const $inputButton = document.querySelector('#input_btn');
 const $inputBox = document.querySelector('body > div > div.input_container > input.input_box');
 const WRAPPER = 'wrapper';
 const COLORBOX = 'color_box';
+const COMMAND_BOX = 'command_box';
 const queryWRAPPER = '.wrapper';
 const queryCOLORBOX = '.color_box';
 let wrapperCount = 0;
@@ -39,9 +40,9 @@ function getCube(cube, containerBox) {
   }
 
   function createCubeDOM() {
-    const boxSize = 9;
+    const BOXSIZE = 9;
     let wrapper = createDIV(WRAPPER);
-    for (let i = 0; i < boxSize; i++) {
+    for (let i = 0; i < BOXSIZE; i++) {
       wrapper.append(createDIV(COLORBOX));
     }
     return wrapper;
@@ -76,7 +77,7 @@ function createDIV(className) {
 }
 
 const getCommandViewBox = function (command) {
-  let box = createDIV(COLORBOX);
+  let box = createDIV(COMMAND_BOX);
   $containerBox.append(box);
   box.innerText = command;
 };
@@ -155,10 +156,10 @@ const leftUp = function (currentArr) {
 
 // B
 const bottomRight = function (currentArr) {
-  let upperArr = [currentArr[2][0], currentArr[2][1], currentArr[2][2]];
-  upperArr.unshift(upperArr.pop());
+  let moveArr = [currentArr[2][0], currentArr[2][1], currentArr[2][2]];
+  moveArr.unshift(moveArr.pop());
   for (let i = 0; i < currentArr.length; i++) {
-    currentArr[2][i] = upperArr[i];
+    currentArr[2][i] = moveArr[i];
   }
   newCube = currentArr;
   getCube(currentArr, $containerBox);
@@ -167,10 +168,10 @@ const bottomRight = function (currentArr) {
 
 // B'
 const bottomLeft = function (currentArr) {
-  let upperArr = [currentArr[2][0], currentArr[2][1], currentArr[2][2]];
-  upperArr.push(upperArr.shift());
+  let moveArr = [currentArr[2][0], currentArr[2][1], currentArr[2][2]];
+  moveArr.push(moveArr.shift());
   for (let i = 0; i < currentArr.length; i++) {
-    currentArr[2][i] = upperArr[i];
+    currentArr[2][i] = moveArr[i];
   }
   newCube = currentArr;
   getCube(currentArr, $containerBox);
@@ -193,22 +194,28 @@ const getInputValue = function () {
 // (singleQuote 정리)
 // 공백제거
 // 문자열 유효한지 검사
-const valueCheck = function (value) {
+function valueCheck(value) {
+  const SPACE_ALERT = '값을 입력해주세요.(빈칸입니다.)';
+  const SINGLE_QUOTE = '잘못된 입력입니다.(sigleQuote연속)';
+  const UNKNOWN_VALUE = "알 수 없는 입력값이 있습니다.\n(유효한 입력값: U, U', R, R', L, L', B, B', Q)";
+
   let checkValue = true;
+
   let valueArr = value.split('');
   let upperValueArr = valueArr.map((e) => e.toUpperCase());
-  let noSpaceArr = delSpace(upperValueArr);
+  let noSpaceArr = deleteWhiteSpace(upperValueArr);
   spaceCheck(noSpaceArr);
   checkSingleQuote(noSpaceArr);
   let noSingleQuoteArr = delSingleQuote(noSpaceArr);
   stringCheck(noSingleQuoteArr);
+
   if (checkValue) {
     return noSingleQuoteArr;
   } else if (!checkValue) {
     return checkValue;
   }
 
-  function delSpace(value) {
+  function deleteWhiteSpace(value) {
     let noSpaceArr = [];
     for (let i = 0; i < value.length; i++) {
       if (value[i] !== ' ') {
@@ -219,7 +226,7 @@ const valueCheck = function (value) {
   }
   function spaceCheck(value) {
     if (value.length === 0) {
-      alert('값을 입력해주세요.(빈칸입니다.)');
+      alert(SPACE_ALERT);
       $inputBox.focus();
       checkValue = false;
       return checkValue;
@@ -233,7 +240,7 @@ const valueCheck = function (value) {
       }
     }
     if (count !== 0) {
-      alert('잘못된 입력입니다.(sigleQuote연속)');
+      alert(SINGLE_QUOTE);
       resetFocus();
       checkValue = false;
       return checkValue;
@@ -260,30 +267,29 @@ const valueCheck = function (value) {
       }
     }
     if (count !== 0) {
-      alert("알 수 없는 입력값이 있습니다.\n(유효한 입력값: U, U', R, R', L, L', B, B', Q)");
+      alert(UNKNOWN_VALUE);
       resetFocus();
       checkValue = false;
       return checkValue;
     }
   }
-};
+}
 
 // movePart
-const findingMove = function () {
+function findingMove() {
   let command = getInputValue();
-  if (command === false) {
+  if (!command) {
     return;
   }
-  for (let i = 0; i < command.length; i++) {
-    for (let j = 0; j < stringSet.length; j++) {
-      if (command[i] === stringSet[j]) {
-        getCommandViewBox(command[i]);
-        movingCube(command[i]);
-      }
-    }
+  operate(command);
+}
+
+function operate(cmd) {
+  for (let i = 0; i < cmd.length; i++) {
+    getCommandViewBox(cmd[i]);
+    movingCube(cmd[i]);
   }
-  resetFocus();
-};
+}
 
 const movingCube = function (value) {
   switch (value) {
