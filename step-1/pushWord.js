@@ -6,7 +6,6 @@ const LEFT = 'L';
 const RIGHT = 'R';
 const PLUS = 'plus';
 const MINUS = 'minus';
-const ALERT = '빈칸을 입력해주세요.';
 
 const operate = function (txt, dir, num) {
   inputCheck(txt, dir, num);
@@ -19,48 +18,53 @@ const operate = function (txt, dir, num) {
 };
 
 const inputCheck = function (txt, dir, num) {
+  const SPACE_ALERT = '빈칸을 입력해주세요.';
+  const DIR_ALERT = 'L 또는 R 만 입력해주세요. (소문자도 가능해요)';
+  const NUM_ALERT = {
+    notNum: '숫자를 입력해주세요.',
+    notInt: '정수로 입력해주세요.',
+    wrongSize: '-100보다 크거나 같고, 100보다 작은 수를 입력해주세요.',
+  };
+
+  if (spaceCheck(txt, dir, num)) {
+    alert(SPACE_ALERT);
+  } else if (directionCheck(dir)) {
+    alert(DIR_ALERT);
+    resetValue($inputDirection);
+  } else if (numberCheck(num)) {
+    moveFocus($inputNumber);
+    resetValue($inputNumber);
+  }
   console.log(txt, dir, num);
-  const spaceCheck = function (txt, dir, num) {
+  function spaceCheck(txt, dir, num) {
     if (txt === '') {
-      alert(ALERT);
       moveFocus($inputWord);
+      return SPACE_ALERT;
     } else if (dir === '') {
-      alert(ALERT);
       moveFocus($inputDirection);
+      return SPACE_ALERT;
     } else if (num === '') {
-      alert(ALERT);
       moveFocus($inputNumber);
+      return SPACE_ALERT;
     }
-  };
-  const directionCheck = function (dir) {
+  }
+  function directionCheck(dir) {
     if (dir !== 'L' && dir !== 'l' && dir !== 'R' && dir !== 'r' && dir.length !== 0) {
-      alert('L 또는 R 만 입력해주세요. (소문자도 가능해요)');
       moveFocus($inputDirection);
-      resetValue($inputDirection);
+      return DIR_ALERT;
     }
-  };
-  const numberCheck = function (num) {
+  }
+  function numberCheck(num) {
     if (isNaN(num)) {
-      alert('숫자를 입력해주세요.');
-      moveFocus($inputNumber);
-      resetValue($inputNumber);
+      return NUM_ALERT.notNum;
     } else if (Number(num) !== parseInt(num)) {
-      alert('정수로 입력해주세요.');
-      moveFocus($inputNumber);
-      resetValue($inputNumber);
+      return NUM_ALERT.notInt;
     } else if (num.length > 16) {
-      alert('정수로 입력해주세요.');
-      moveFocus($inputNumber);
-      resetValue($inputNumber);
+      return NUM_ALERT.notInt;
     } else if (num < -100 || num > 100) {
-      alert('-100보다 크거나 같고, 100보다 작은 수를 입력해주세요.');
-      moveFocus($inputNumber);
-      resetValue($inputNumber);
+      return NUM_ALERT.wrongSize;
     }
-  };
-  spaceCheck(txt, dir, num);
-  directionCheck(dir);
-  numberCheck(num);
+  }
 };
 
 const getDirection = function (dir, num) {

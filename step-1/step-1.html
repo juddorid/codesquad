@@ -43,6 +43,9 @@
         text-align: center;
         margin: 5px auto;
         padding: 5px;
+        justify-content: center;
+        align-items: center;
+        display: flex;
       }
       .step-1 {
         width: 540px;
@@ -58,10 +61,24 @@
         font-size: 16px;
         justify-content: center;
         align-items: center;
+        display: flex;
         margin: 4px auto;
         background: #333333;
         border: 1px solid white;
         color: white;
+      }
+      .nav_button:hover {
+        color: red;
+        transition: 0.4s;
+      }
+      .step-1-button:hover {
+        color: red;
+        transition: 0.4s;
+      }
+      #step-1-input-result {
+        background: #333333;
+        border: 1px solid white;
+        color: yellow;
       }
     </style>
     <title>Step-1</title>
@@ -98,7 +115,12 @@
         onclick="operate($inputWord.value, $inputDirection.value, $inputNumber.value)"
       />
       <input class="step-1-button step-1" type="submit" value="다시하기" id="step-1-btn" onclick="resetAll()" />
-      <input class="step-1" id="step-1-input-result" disabled placeholder="실행 버튼을 누르면 결과가 나타나요." />
+      <input
+        class="step-1"
+        id="step-1-input-result"
+        disabled
+        placeholder="실행 버튼을 누르면 이곳에 결과가 나타나요."
+      />
     </div>
   </body>
   <script src="./pushWord.js"></script>
