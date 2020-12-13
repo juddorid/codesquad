@@ -19,7 +19,6 @@ function operate(txt, dir, num) {
   let lastDirection = getDirection(unifiedDirection, num);
   let lastWord = pushWord(txt, lastDirection, absNumber);
   $resultBox.value = lastWord.join('');
-  console.log(txt, dir, num, $resultBox.value);
 }
 
 function inputCheck() {
