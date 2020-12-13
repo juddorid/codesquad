@@ -9,36 +9,32 @@
 // > Q  Bye~를 출력하고 프로그램을 종료한다.
 
 // plane Cube
-const myCube = [
+let myCube = [
   ['R', 'R', 'W'],
   ['G', 'C', 'W'],
   ['G', 'B', 'B'],
 ];
-const stringSet = ['U', "U'", 'R', "R'", 'L', "L'", 'B', "B'", 'Q'];
+const stringList = ['U', "U'", 'R', "R'", 'L', "L'", 'B', "B'", 'Q'];
 const $containerBox = document.querySelector('#container_box');
 const $inputButton = document.querySelector('#input_btn');
 const $inputBox = document.querySelector('body > div > div.input_container > input.input_box');
 const WRAPPER = 'wrapper';
 const COLORBOX = 'color_box';
 const COMMAND_BOX = 'command_box';
-const queryWRAPPER = '.wrapper';
-const queryCOLORBOX = '.color_box';
-let wrapperCount = 0;
-let newCube = myCube;
+let oneWayCube = getCubeArray(myCube);
 
 getCube(myCube, $containerBox);
 
-function getCube(cube, containerBox) {
-  function getCubeArray(cube) {
-    let cubeArray = [];
-    for (let i = 0; i < cube.length; i++) {
-      for (let j = 0; j < cube.length; j++) {
-        cubeArray.push(cube[i][j]);
-      }
+function getCubeArray(cube) {
+  let cubeArray = [];
+  for (let i = 0; i < cube.length; i++) {
+    for (let j = 0; j < cube.length; j++) {
+      cubeArray.push(cube[i][j]);
     }
-    return cubeArray;
   }
-
+  return cubeArray;
+}
+function getCube(cube, containerBox) {
   function createCubeDOM() {
     const BOXSIZE = 9;
     let wrapper = createDIV(WRAPPER);
@@ -67,7 +63,6 @@ function getCube(cube, containerBox) {
   inputCubeValue(cube, box);
   getColor(box);
   containerBox.append(box);
-  wrapperCount++;
 }
 
 function createDIV(className) {
@@ -82,105 +77,52 @@ const getCommandViewBox = function (command) {
   box.innerText = command;
 };
 
-// U
-const upperLeft = function (currentArr) {
-  let moveArr = [currentArr[0][0], currentArr[0][1], currentArr[0][2]];
-  moveArr.push(moveArr.shift());
-  for (let i = 0; i < currentArr.length; i++) {
-    currentArr[0][i] = moveArr[i];
-  }
-  newCube = currentArr;
-  getCube(currentArr, $containerBox);
-  return newCube;
+const getXY = function (i) {
+  return {
+    U: { X: 0, Y: i },
+    R: { X: i, Y: 2 },
+    L: { X: i, Y: 0 },
+    B: { X: 2, Y: i },
+  };
 };
 
-// U'
-const upperRight = function (currentArr) {
-  let moveArr = [currentArr[0][0], currentArr[0][1], currentArr[0][2]];
-  moveArr.unshift(moveArr.pop());
-  for (let i = 0; i < currentArr.length; i++) {
-    currentArr[0][i] = moveArr[i];
+function getLineArr(arr, loc) {
+  let lineArr = [];
+  for (let i = 0; i < 3; i++) {
+    let XY = getXY(i)[loc];
+    lineArr.push(arr[XY.X][XY.Y]);
   }
-  newCube = currentArr;
-  getCube(currentArr, $containerBox);
-  return newCube;
-};
+  return lineArr;
+}
 
-// R
-const rightUp = function (currentArr) {
-  let moveArr = [currentArr[0][2], currentArr[1][2], currentArr[2][2]];
-  moveArr.push(moveArr.shift());
-  for (let i = 0; i < currentArr.length; i++) {
-    currentArr[i][2] = moveArr[i];
-  }
-  newCube = currentArr;
-  getCube(currentArr, $containerBox);
-  return newCube;
-};
+function linePush(arr, i) {
+  const goClock = (arr) => {
+    arr.push(arr.shift());
+    return arr;
+  };
+  const goUnClock = (arr) => {
+    arr.unshift(arr.pop());
+    return arr;
+  };
+  let rotateArr = i % 2 === 0 ? goClock(arr) : goUnClock(arr);
+  return rotateArr;
+}
 
-// R'
-const rightDown = function (currentArr) {
-  let moveArr = [currentArr[0][2], currentArr[1][2], currentArr[2][2]];
-  moveArr.unshift(moveArr.pop());
-  for (let i = 0; i < currentArr.length; i++) {
-    currentArr[i][2] = moveArr[i];
+const rotateCube = function (arr, loc, dir) {
+  let moveArr = getLineArr(arr, loc);
+  let pushedLine = linePush(moveArr, dir);
+  for (let i = 0; i < arr.length; i++) {
+    let XY = getXY(i)[loc];
+    arr[XY.X][XY.Y] = pushedLine[i];
   }
-  newCube = currentArr;
-  getCube(currentArr, $containerBox);
-  return newCube;
-};
-
-// L (warning! opposite direction!)
-const leftDown = function (currentArr) {
-  let moveArr = [currentArr[0][0], currentArr[1][0], currentArr[2][0]];
-  moveArr.unshift(moveArr.pop());
-  for (let i = 0; i < currentArr.length; i++) {
-    currentArr[i][0] = moveArr[i];
-  }
-  newCube = currentArr;
-  getCube(currentArr, $containerBox);
-  return newCube;
-};
-
-// L' (warning! opposite direction!)
-const leftUp = function (currentArr) {
-  let moveArr = [currentArr[0][0], currentArr[1][0], currentArr[2][0]];
-  moveArr.push(moveArr.shift());
-  for (let i = 0; i < currentArr.length; i++) {
-    currentArr[i][0] = moveArr[i];
-  }
-  newCube = currentArr;
-  getCube(currentArr, $containerBox);
-  return newCube;
-};
-
-// B
-const bottomRight = function (currentArr) {
-  let moveArr = [currentArr[2][0], currentArr[2][1], currentArr[2][2]];
-  moveArr.unshift(moveArr.pop());
-  for (let i = 0; i < currentArr.length; i++) {
-    currentArr[2][i] = moveArr[i];
-  }
-  newCube = currentArr;
-  getCube(currentArr, $containerBox);
-  return newCube;
-};
-
-// B'
-const bottomLeft = function (currentArr) {
-  let moveArr = [currentArr[2][0], currentArr[2][1], currentArr[2][2]];
-  moveArr.push(moveArr.shift());
-  for (let i = 0; i < currentArr.length; i++) {
-    currentArr[2][i] = moveArr[i];
-  }
-  newCube = currentArr;
-  getCube(currentArr, $containerBox);
-  return newCube;
+  getCube(arr, $containerBox);
+  return arr;
 };
 
 // Q
 const quitBye = function () {
   $inputBox.value = 'BYE~!';
+  $inputBox.disabled = true;
 };
 
 // getInputValue
@@ -262,7 +204,7 @@ function valueCheck(value) {
   function stringCheck(value) {
     let count = 0;
     for (let i = 0; i < value.length; i++) {
-      if (!stringSet.includes(value[i])) {
+      if (!stringList.includes(value[i])) {
         count++;
       }
     }
@@ -293,31 +235,31 @@ function operate(cmd) {
 
 const movingCube = function (value) {
   switch (value) {
-    case stringSet[0]:
-      upperLeft(newCube);
+    case stringList[0]:
+      rotateCube(myCube, 'U', stringList.indexOf(value));
       break;
-    case stringSet[1]:
-      upperRight(newCube);
+    case stringList[1]:
+      rotateCube(myCube, 'U', stringList.indexOf(value));
       break;
-    case stringSet[2]:
-      rightUp(newCube);
+    case stringList[2]:
+      rotateCube(myCube, 'R', stringList.indexOf(value));
       break;
-    case stringSet[3]:
-      rightDown(newCube);
+    case stringList[3]:
+      rotateCube(myCube, 'R', stringList.indexOf(value));
       break;
-    case stringSet[4]:
-      leftDown(newCube);
+    case stringList[4]:
+      rotateCube(myCube, 'L', stringList.indexOf(value));
       break;
-    case stringSet[5]:
-      leftUp(newCube);
+    case stringList[5]:
+      rotateCube(myCube, 'L', stringList.indexOf(value));
       break;
-    case stringSet[6]:
-      bottomRight(newCube);
+    case stringList[6]:
+      rotateCube(myCube, 'B', stringList.indexOf(value));
       break;
-    case stringSet[7]:
-      bottomLeft(newCube);
+    case stringList[7]:
+      rotateCube(myCube, 'B', stringList.indexOf(value));
       break;
-    case stringSet[8]:
+    case stringList[8]:
       quitBye();
       break;
     default:
