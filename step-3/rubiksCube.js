@@ -1,7 +1,5 @@
 const colorList = ['B', 'W', 'O', 'G', 'Y', 'R'];
 const cmdList = ['F', "F'", 'R', "R'", 'U', "U'", 'B', "B'", 'L', "L'", 'D', "D'", 'Q', '2'];
-const RUBIKS = 3;
-const MIDDLE = 4;
 const VIEW_CONTAINER = 'view_container';
 const LINE_CONTAINER = 'line_container';
 const WRAPPER = 'wrapper';
@@ -17,11 +15,6 @@ let end;
 let time = 0;
 let cubeCount = 1;
 start = new Date().getTime();
-
-// 숫자 구분해서 받아오기
-// 랜덤구현하기
-// 함수 20줄 이내로 정리하기
-// 뎁스 줄이기
 
 // random
 function randomCommand() {
@@ -52,6 +45,7 @@ isPerfectCube();
 function getRubiksCube(list) {
   // plane cube
   function getRubiks(color) {
+    const RUBIKS = 3;
     let rubiks = [];
     for (let i = 0; i < RUBIKS; i++) {
       let temp = [];
@@ -125,6 +119,7 @@ function drawCube(box, className) {
     box.append(container);
   }
   function middleWrapper() {
+    const MIDDLE = 4;
     let container = createDIV(className);
     for (let i = 0; i < MIDDLE; i++) {
       container.append(createCubeDOM());
