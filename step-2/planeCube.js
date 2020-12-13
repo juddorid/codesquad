@@ -234,36 +234,17 @@ function operate(cmd) {
 }
 
 const movingCube = function (value) {
-  switch (value) {
-    case stringList[0]:
-      rotateCube(myCube, 'U', stringList.indexOf(value));
-      break;
-    case stringList[1]:
-      rotateCube(myCube, 'U', stringList.indexOf(value));
-      break;
-    case stringList[2]:
-      rotateCube(myCube, 'R', stringList.indexOf(value));
-      break;
-    case stringList[3]:
-      rotateCube(myCube, 'R', stringList.indexOf(value));
-      break;
-    case stringList[4]:
-      rotateCube(myCube, 'L', stringList.indexOf(value));
-      break;
-    case stringList[5]:
-      rotateCube(myCube, 'L', stringList.indexOf(value));
-      break;
-    case stringList[6]:
-      rotateCube(myCube, 'B', stringList.indexOf(value));
-      break;
-    case stringList[7]:
-      rotateCube(myCube, 'B', stringList.indexOf(value));
-      break;
-    case stringList[8]:
-      quitBye();
-      break;
-    default:
-      break;
+  let idx = stringList.indexOf(value);
+  if (idx < 2) {
+    rotateCube(myCube, 'U', idx);
+  } else if (idx < 4) {
+    rotateCube(myCube, 'R', idx);
+  } else if (idx < 6) {
+    rotateCube(myCube, 'L', idx);
+  } else if (idx < 8) {
+    rotateCube(myCube, 'B', idx);
+  } else if (idx === 8) {
+    quitBye();
   }
 };
 
