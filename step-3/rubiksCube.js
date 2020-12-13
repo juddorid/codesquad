@@ -153,15 +153,19 @@ function getInfoViewBox(num) {
 
 // get Cube Array
 function getCubeArray(cube) {
-  let cubeArray = [];
+  let lineArr = getArray(cube);
+  let cubeArray = getArray(lineArr);
+  return cubeArray;
+}
+
+function getArray(cube) {
+  let arr = [];
   for (let i = 0; i < cube.length; i++) {
     for (let j = 0; j < cube[i].length; j++) {
-      for (let k = 0; k < cube[i][j].length; k++) {
-        cubeArray.push(cube[i][j][k]);
-      }
+      arr.push(cube[i][j]);
     }
   }
-  return cubeArray;
+  return arr;
 }
 
 // 회전된 배열
@@ -313,6 +317,11 @@ function decryption(cube) {
     },
   };
   return myDecryption;
+}
+
+// select direction
+function selectDirection(cube, value) {
+  cmdList.indexOf(value) % 2 === 0 ? rotateA(cube, value) : rotateB(cube, value);
 }
 
 // rotate right
